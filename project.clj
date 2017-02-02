@@ -1,4 +1,4 @@
-(defproject chaintool "0.9.0"
+(defproject chaintool "0.9.1"
   :description "hyperledger chaincode tool"
   :url "https://github.com/ghaskins/chaintool"
   :license {:name "Apache License"
@@ -6,6 +6,7 @@
   :min-lein-version "2.0.0"
   :lein-release {:deploy-via :shell :shell ["true"]}
   :javac-options ["-target" "1.7" "-source" "1.7"]
+  :jvm-opts ["-server"]
   :java-source-paths ["src"]
   :plugins [[lein-bin "0.3.5"]]
   :dependencies [[org.clojure/clojure "1.8.0"]
