@@ -44,14 +44,11 @@
                  (conj defs loc)
                  defs))))))
 
-(def function-class
-  {:transactions "txn"
-   :queries "query"})
-
 (defn- getallfunctions [ast]
-  (flatten (for [[type functions] (intf/getallfunctions ast)]
-             (for [[_ func] functions]
-               (assoc func :type (function-class type))))))
+  (let [{:keys [functions]} (intf/getallfunctions ast)]
+    (-> functions
+        vals
+        flatten)))
 
 ;;-----------------------------------------------------------------
 ;; buildX - build our ST friendly objects from the AST
@@ -120,8 +117,8 @@
        (mapv vec)
        (into {})))
 
-(defn- buildfunction [name {:keys [rettype functionName param index type] :as ast}]
-  (let [key (str name "/" type "/" index)]
+(defn- buildfunction [name {:keys [rettype functionName param index] :as ast}]
+  (let [key (str name "/fcn/" index)]
     (->Function key rettype functionName param)))
 
 (defn- buildfunctions [name ast]

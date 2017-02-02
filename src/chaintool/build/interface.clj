@@ -119,9 +119,9 @@
   (if-let [results (ast/find term ast)]
     (getfunctions results)))
 
-(defn gettransactions [ast] (getgeneric ast :transactions))
-(defn getqueries [ast] (getgeneric ast :queries))
-(defn getallfunctions [ast] (into {} (vector (gettransactions ast) (getqueries ast))))
+(defn getallfunctions [ast] (->> (getgeneric ast :functions)
+                                 vector
+                                 (into {})))
 
 (defn find-definition-in-local [name ast]
   (let [start (zip/leftmost ast)]
@@ -368,8 +368,8 @@
   (let [ast (interfaces "appinit")]
     (cond
 
-      ;; We do not allow any explicit transactions or queries in the project interface
-      (or (ast/find :transactions ast) (ast/find :queries ast))
+      ;; We do not allow any explicit functions in the project interface
+      (ast/find :functions ast)
       (str "appinit.cci: illegal RPCs detected")
 
       ;; We cannot continue if the user didnt supply a message "Init"  which will

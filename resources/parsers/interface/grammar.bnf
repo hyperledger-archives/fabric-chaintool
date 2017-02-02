@@ -1,5 +1,5 @@
 
-interface  ::= ( message | enum )* transactions? queries?
+interface  ::= ( message | enum )* functions?
 
 message ::= <"message"> ident messageBody
 
@@ -9,10 +9,9 @@ enumField ::= enumName <"="> enumValue <";">
 <enumName> ::= ident
 <enumValue> ::= intLit
 
-transactions ::= <"transactions"> functions
-queries ::= <"queries"> functions
+functions ::= <"functions"> functionblock
 
-<functions> ::= <"{"> function* <"}">
+<functionblock> ::=  <"{"> function* <"}">
 function ::= rettype functionName <"("> param? <")"> <"="> index <";">
 functionName := ident
 rettype ::= ident

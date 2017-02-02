@@ -31,6 +31,12 @@
   platforms.api/Platform
 
   ;;-----------------------------------------------------------------
+  ;; env - Emits the GOPATH used for building golang chaincode
+  ;;-----------------------------------------------------------------
+  (env [_ {:keys [path]}]
+    (println (str "GOPATH=" (buildgopath path))))
+
+  ;;-----------------------------------------------------------------
   ;; build - generates all golang platform artifacts within the
   ;; default location in the build area
   ;;-----------------------------------------------------------------

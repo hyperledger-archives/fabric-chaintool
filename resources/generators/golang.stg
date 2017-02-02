@@ -21,6 +21,7 @@ import (
 
         <if(system)>"github.com/hyperledger/fabric/core/system_chaincode/api"<endif>
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+        pb "github.com/hyperledger/fabric/protos/peer"
         "<base>/ccs/api"
 )
 
@@ -31,39 +32,51 @@ type stubHandler struct {
      dispatchers Dispatchers
 }
 
-var txnre   = regexp.MustCompile("([a-zA-Z0-9.]*)/txn/([0-9]*)")
-var queryre = regexp.MustCompile("([a-zA-Z0-9.]*)/query/([0-9]*)")
+var functionspec = regexp.MustCompile("([a-zA-Z0-9.]*)/fcn/([0-9]*)")
 
 // Initialization function, called only once
-func (self *stubHandler) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
+func (self *stubHandler) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 	function, args := stub.GetFunctionAndParameters()
 
 	if len(args) != 1 {
-		return nil, errors.New("Expected exactly one argument")
+		return shim.Error("Expected exactly one argument")
 	}
 
         if function != "init" {
-               return nil, errors.New("Function must be \"init\"")
+               return shim.Error("Function must be \"init\"")
         }
 
         dispatcher, ok := self.dispatchers["appinit"]
         if !ok {
-               return nil, errors.New("Interface not found")
+               return shim.Error("Interface not found")
         }
 
-        return dispatcher.DispatchTxn(stub, 1, args[0])
+        return dispatcher.Dispatch(stub, 1, args[0])
 }
 
 // Callback representing the invocation of a chaincode
-<implementhandler(true)>
+func (self *stubHandler) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 
-// Callback representing the query of a chaincode
-<implementhandler(false)>
+	function, args := stub.GetFunctionAndParameters()
 
-func (self *stubHandler) decodeFunction(re *regexp.Regexp, function string) (api.Dispatcher, int, error) {
+        var params string;
 
-        spec := re.FindAllStringSubmatch(function, -1)
+	if len(args) > 0 {
+		params = args[0]
+	}
+
+	dispatcher, index, err := self.decodeFunction(function)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+        return dispatcher.Dispatch(stub, index, params)
+}
+
+func (self *stubHandler) decodeFunction(function string) (api.Dispatcher, int, error) {
+
+        spec := functionspec.FindAllStringSubmatch(function, -1)
 	if spec == nil {
 		return nil, 0, errors.New("Could not parse function name")
 	}
@@ -73,7 +86,7 @@ func (self *stubHandler) decodeFunction(re *regexp.Regexp, function string) (api
 		return nil, 0, errors.New("Interface not found")
 	}
 
-	index, err := strconv.Atoi(spec[0][2])
+ 	index, err := strconv.Atoi(spec[0][2])
 	if err != nil {
 		return nil, 0, errors.New("Could not convert function index")
 	}
@@ -145,11 +158,11 @@ package api
 import (
         "errors"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+        pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 type Dispatcher interface {
-     DispatchTxn(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error)
-     DispatchQuery(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error)
+     Dispatch(stub shim.ChaincodeStubInterface, function int, params string) pb.Response
 }
 
 type Factory interface {
@@ -258,14 +271,14 @@ package <intf.package>
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+        pb "github.com/hyperledger/fabric/protos/peer"
         "<base>/ccs/api"
         "encoding/base64"
-        "errors"
+        "fmt"
 )
 
 type CCInterface interface {
-     <declarefunctions(intf, intf.transactions)>
-     <declarefunctions(intf, intf.queries)>
+     <declarefunctions(intf, intf.functions)>
 }
 
 
@@ -286,27 +299,17 @@ func (self *factoryImpl) Create(intf interface{}) (api.Dispatcher, error) {
      return &stubImpl{intf: intf.(CCInterface)}, nil
 }
 
-func (self *stubImpl) DispatchTxn(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error) {
+func (self *stubImpl) Dispatch(stub shim.ChaincodeStubInterface, function int, params string) pb.Response {
         // Handle different functions
         switch {
-        <dispatchfunctions(true, intf, intf.transactions)>
+        <dispatchfunctions(intf, intf.functions)>
         default:
-                return nil, errors.New("Received unknown function invocation")
-        }
-}
-
-func (self *stubImpl) DispatchQuery(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error) {
-        // Handle different functions
-        switch {
-        <dispatchfunctions(true, intf, intf.queries)>
-        default:
-                return nil, errors.New("Received unknown function invocation")
+                return shim.Error("Received unknown function invocation")
         }
 }
 
 /* Server stubs */
-<implementservers(intf, intf.transactions)>
-<implementservers(intf, intf.queries)>
+<implementservers(intf, intf.functions)>
 
 <!
 !-------------------------------------------------------------------------------------------------
@@ -334,11 +337,11 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
         "encoding/base64"
+        "fmt"
 )
 
 /* Client stubs */
-<implementclients(true, intf, intf.transactions)>
-<implementclients(false, intf, intf.queries)>
+<implementclients(intf, intf.functions)>
 
 <!
 !-------------------------------------------------------------------------------------------------
@@ -347,47 +350,26 @@ import (
 !>
 >>
 
-compositename(txn, intf, func)          ::= "\"<intf.name>/<if(txn)>txn<else>query<endif>/<func.index>\""
+compositename(intf, func)          ::= "\"<intf.name>/fcn/<func.index>\""
 implementservers(intf, functions)  ::= "<functions.values:{x | <implementserver(intf, x)> }; separator=\"\n\">"
-implementclients(txn, intf, functions)  ::= "<functions.values:{x | <implementclient(txn, intf, x)> }; separator=\"\n\">"
-dispatchfunctions(txn, intf, functions) ::= "<functions.values:{x | <dispatchfunction(txn, intf, x)> }; separator=\"\n\">"
+implementclients(intf, functions)  ::= "<functions.values:{x | <implementclient(intf, x)> }; separator=\"\n\">"
+dispatchfunctions(intf, functions) ::= "<functions.values:{x | <dispatchfunction(intf, x)> }; separator=\"\n\">"
 
 declarefunctions(intf, functions) ::=
 <<
 <functions.values:{x | <x.name>(shim.ChaincodeStubInterface<if(x.param)>, *<x.param><endif>) <if(x.rettype)>(*<x.rettype>, error)<else>error<endif> }; separator="\n">
 >>
 
-dispatchfunction(txn, intf, func) ::=
+dispatchfunction(intf, func) ::=
 <<
 case function == <func.index>:
      return self.proxy<func.name>(stub, params)
 >>
 
-implementhandler(txn) ::=
-<<
-func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub shim.ChaincodeStubInterface) ([]byte, error) {
-
-	function, args := stub.GetFunctionAndParameters()
-
-        var params string;
-
-	if len(args) > 0 {
-		params = args[0]
-	}
-
-	dispatcher, index, err := self.decodeFunction(<if(txn)>txnre<else>queryre<endif>, function)
-	if err != nil {
-		return nil, err
-	}
-
-        return dispatcher.Dispatch<if(txn)>Txn<else>Query<endif>(stub, index, params)
-}
->>
-
 implementserver(intf, func) ::=
 <<
 
-func (self *stubImpl) proxy<func.name>(stub shim.ChaincodeStubInterface, _params string) ([]byte, error) {
+func (self *stubImpl) proxy<func.name>(stub shim.ChaincodeStubInterface, _params string) pb.Response {
 
      var err error;
 
@@ -395,41 +377,47 @@ func (self *stubImpl) proxy<func.name>(stub shim.ChaincodeStubInterface, _params
      params := &<func.param>{}
      _pbinput, err := base64.StdEncoding.DecodeString(_params)
      if (err != nil) {
-        return nil, err
+        return shim.Error(fmt.Sprintf("base64 decode error: %s", err))
      }
      err = proto.Unmarshal(_pbinput, params)
      if (err != nil) {
-        return nil, err
+        return shim.Error(fmt.Sprintf("protobuf unmarshal error: %s", err))
      }
      <endif>
 
      <if(func.rettype)>result, err := <else>err = <endif>self.intf.<func.name>(stub<if(func.param)>, params<endif>)
      if (err != nil) {
-        return nil, err
+        return shim.Error(err.Error())
      }
 
      <if(func.rettype)>
      _pboutput, err := proto.Marshal(result)
      if (err != nil) {
-        return nil, err
+        return shim.Error(fmt.Sprintf("protobuf marshal error: %s", err))
      }
      _result := base64.StdEncoding.EncodeToString(_pboutput)
-     return []byte(_result), nil
+     return shim.Success([]byte(_result))
      <else>
-     return nil, nil
+     return shim.Success(nil)
      <endif>
 }
 
 >>
 
-implementclient(txn, intf, func) ::=
+implementclient(intf, func) ::=
 <<
 
 func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
 <if(func.rettype)>(*<func.rettype>, error)<else>error<endif> {
 
-     args := make([]string, 1)
+     <if(func.param)>
+     args := make([][]byte, 2)
+     <else>
+     args := make([][]byte, 1)
+     <endif>
      var err error
+
+     args[0] = []byte(<compositename(intf, func)>)
 
      <if(func.param)>
      _pboutput, err := proto.Marshal(params)
@@ -437,25 +425,29 @@ func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.
           return <if(func.rettype)>nil, <endif>err
      }
 
-     args[0] = base64.StdEncoding.EncodeToString(_pboutput)
+     args[1] = make([]byte, base64.StdEncoding.EncodedLen(len(_pboutput)))
+     base64.StdEncoding.Encode(args[1], _pboutput)
      <endif>
 
-     <if(func.rettype)>_result, err :=<else>_, err =<endif> stub.<if(txn)>Invoke<else>Query<endif>Chaincode(chaincodeName, <compositename(txn, intf, func)>, args)
+      resp := stub.InvokeChaincode(chaincodeName, args)
+      if resp.Status \< shim.ERROR {
+         <if(func.rettype)>
+	result := &<func.rettype>{}
+	_pbinput, err := base64.StdEncoding.DecodeString(string(resp.Payload))
+	if (err != nil) {
+	     return nil, fmt.Errorf("Error decoding base64 return value: %s", err)
+	}
+	err = proto.Unmarshal(_pbinput, result)
+	if (err != nil) {
+	     return nil, fmt.Errorf("Error unmarshalling return value: %s", err)
+	}
+	return result, nil
+	<else>
+	return nil
+	<endif>
+     }
 
-     <if(func.rettype)>
-     result := &<func.rettype>{}
-     _pbinput, err := base64.StdEncoding.DecodeString(string(_result))
-     if (err != nil) {
-          return nil, err
-     }
-     err = proto.Unmarshal(_pbinput, result)
-     if (err != nil) {
-          return nil, err
-     }
-     return result, nil
-     <else>
-     return err
-     <endif>
+     return <if(func.rettype)>nil, <endif>fmt.Errorf("RPC failure: %s", resp.Message)
 }
 
 >>

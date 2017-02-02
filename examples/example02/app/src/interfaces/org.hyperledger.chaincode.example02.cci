@@ -13,11 +13,9 @@ message BalanceResult {
         int32 balance = 1;
 }
 
-transactions {
+functions {
         void MakePayment(PaymentParams) = 1;
         void DeleteAccount(Entity) = 2;
+        BalanceResult CheckBalance(Entity) = 3;
 }
 
-queries {
-        BalanceResult CheckBalance(Entity) = 1;
-}

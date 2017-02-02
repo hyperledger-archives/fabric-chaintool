@@ -96,7 +96,7 @@
 
 (def parameterless-function
   (zip/vector-zip
-   [:interface [:queries [:function [:rettype "string"] [:functionName "Parameterless"] [:index "1"]]]]))
+   [:interface [:functions [:function [:rettype "string"] [:functionName "Parameterless"] [:index "1"]]]]))
 
 (deftest parameterless-test
   (let [result (round-about parameterless-function)]

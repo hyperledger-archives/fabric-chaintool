@@ -34,7 +34,7 @@
 ;;
 
 (deftype Function            [^String rettype ^String name ^String param ^Integer index])
-(deftype Interface           [^String name ^String package ^String packageCamel ^String packagepath ^ArrayList transactions ^ArrayList queries])
+(deftype Interface           [^String name ^String package ^String packageCamel ^String packagepath ^ArrayList functions])
 (deftype InterfaceDefinition [^String name ^String bytes])
 (deftype Fact                [^String name ^String value])
 
@@ -101,9 +101,8 @@
              (build-function v))))
 
 (defn- build-interface [base name interface]
-  (let [transactions (build-functions (:transactions interface))
-        queries (build-functions (:queries interface))]
-    (vector name (->Interface name (package-name name) (package-camel name) (package-path base name) transactions queries))))
+  (let [functions (build-functions (:functions interface))]
+    (vector name (->Interface name (package-name name) (package-camel name) (package-path base name) functions))))
 
 (defn- build-interfaces [base interfaces]
   (into {} (map (fn [[name interface]] (build-interface base name interface)) interfaces)))
@@ -251,7 +250,7 @@
                  (emit-server-stub base name functions opath))))
 
        ;; and now special case the appinit  interface
-      (emit-server-stub base "appinit" {:transactions {1 {:rettype "void", :functionName "Init", :param "Init", :index 1, :subType nil, :typeName nil}}} opath))
+      (emit-server-stub base "appinit" {:functions {1 {:rettype "void", :functionName "Init", :param "Init", :index 1, :subType nil, :typeName nil}}} opath))
 
      ;; generate our client stubs
     (dorun (for [name (intf/getconsumes config)]

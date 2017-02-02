@@ -8,7 +8,7 @@ _chaintool_ is a toolchain to assist in various phases of [Hyperledger Fabric](h
 
 ### Why?
 
-Current chaincode development is rather unstructured outside of the coarse-level callbacks for invoke or query passing a {function-name, argument-array} string-based tuple.  The result of this is that input translation/validation is a manual, explicit, and likely fragile process in each chaincode function.  Additionally, any potential chaincode consumer needs to study the chaincode source in order to ascertain its API.
+Current chaincode development is rather unstructured outside of the coarse-level callbacks for Invoke() passing opaque bytes.  The result of this is that input translation/validation is a manual, explicit, and likely fragile process in each chaincode function.  Additionally, any potential chaincode consumer needs to study the chaincode source in order to ascertain its API.
 
 Consider that some chaincode applications may employ confidentiality to hide their source, while others may wish to employ alternative programming languages.  This aside, chaincode deployment lifecycles may be long enough to require us to be aware of managing potential API incompatibilities between the chaincode and its clients.  It starts to become clear that there are some advantages to allowing chaincode to express its API interfaces in a way that is independent from the underlying implementation/language and in a manner that supports some form of schema management.
 
@@ -30,7 +30,7 @@ _chaintool_ provides some other benefits too, such as consistent language-neutra
 
 ```
 $ chaintool -h
-chaintool version: v0.7
+chaintool version: v0.10.1
 
 Usage: chaintool [general-options] action [action-options]
 
@@ -60,7 +60,7 @@ In all cases, you may obtain subcommand specific help by invoking "chaintool _$s
 
 ```
 $ chaintool package -h
-chaintool version: v0.7
+chaintool version: v0.10.1
 
 Description: chaintool package - Package the chaincode into a CAR file for deployment
 
@@ -210,7 +210,7 @@ The only core requirement is that both _chaintool_ and the chosen Hyperledger ne
 
 #### Interface Declarations
 
-Interfaces (as included in ./src/interfaces) may be in one or two categories: Provided or Consumed.  _Provided_ means that the chaincode implements the interface and supports having clients or other chaincode invoke methods as declared.  Likewise, _consumed_ indicates that the chaincode expects to perform inter-chaincode invoke/query operations to a disparate chaincode instance that provides the interface.  It is perfectly fine (though perhaps uncommon) for a chaincode to both provide and consume a given interface (such as for proxy contracts which may accept operations in a polymorphic manner before passing operations on to a concrete instance).
+Interfaces (as included in ./src/interfaces) may be in one or two categories: Provided or Consumed.  _Provided_ means that the chaincode implements the interface and supports having clients or other chaincode invoke methods as declared.  Likewise, _consumed_ indicates that the chaincode expects to perform inter-chaincode invoke operations to a disparate chaincode instance that provides the interface.  It is perfectly fine (though perhaps uncommon) for a chaincode to both provide and consume a given interface (such as for proxy contracts which may accept operations in a polymorphic manner before passing operations on to a concrete instance).
 
 Both Provides and Consumes are expressed as an array of 1 or more entries.  For example:
 
@@ -273,20 +273,14 @@ message BalanceResult {
         int32 balance = 1;
 }
 
-transactions {
+functions {
         void MakePayment(PaymentParams) = 1;
         void DeleteAccount(Entity) = 2;
-}
-
-queries {
-        BalanceResult CheckBalance(Entity) = 1;
+        BalanceResult CheckBalance(Entity) = 3;
 }
 ```
 
-The _message_ definitions are almost 1:1 with protobuf grammar.  The largest divergence is w.r.t. the _transactions_ and _queries_ sections.  These two are similar to one another as well as to the notion of service/rpc in protobuf grammar.  The reason we diverged is for a few different reasons:
-
-- Chaincode has a strong delineation between and invoke and a query, and it was important for the parser to be able to understand the breakdown so that the proper code could be emitted
-- It was felt that the lack of "field indices" in the protobuf service/rpc grammar was a large shortcoming in ABI compatibility.  Therefore, the grammar used here retains the notion of indices even for function calls.
+The _message_ definitions are almost 1:1 with protobuf grammar.  The largest divergence is w.r.t. the _functions_ section.  This section is similiar to the notion of service/rpc in protobuf grammar.  We diverged from the protobuf/grpc grammar because it was felt that the lack of "field indices" was a large shortcoming in ABI compatibility.  Therefore, the grammar used here retains the notion of indices even for function calls.
 
 The main purpose of the grammar is to define RPC functions.  For reasons of ABI stability, it was decided that all RPCs will have the following properties:
 - Be indexed (e.g. ABI depends on index stability, not function name)
@@ -316,23 +310,16 @@ message ChaincodeInput {
 
 }
 ```
-Chaintool deterministically maps transactions/queries declared within a CCI to an [encoded function name](#function-encoding), and expects the corresponding input parameter to be a base64 encoded protobuf message as the first and only arg string.
+Chaintool deterministically maps functions declared within a CCI to an [encoded function name](#function-encoding), and expects the corresponding input parameter to be a base64 encoded protobuf message as the first and only arg string.
 
 Example:
 ```
-{"function":"org.hyperledger.chaincode.example02/query/1","args":["CgNmb28="]}}
+{"function":"org.hyperledger.chaincode.example02/fcn/3","args":["CgNmb28="]}}
 ```
 
 #### Function Encoding
 
-Function naming follows the convention *interface-name/method-type/method-index*.  For instance, invoking *MakePayment* from our [example](./examples/example02/app/src/interfaces/org.hyperledger.chaincode.example02.cci) would be *org.hyperledger.chaintool.example02/txn/1*.  Because its transaction #1 in the org.hyperledger.chaintool.example02 interface.
-
-##### Method Types
-
-There are two types of methods: transactions and queries.  We therefore have two values in the function name that correspond to the underlying method type:
-
-- "txn" - transactions
-- "query" - queries
+Function naming follows the convention *interface-name/method-type/method-index*.  For instance, invoking *MakePayment* from our [example](./examples/example02/app/src/interfaces/org.hyperledger.chaincode.example02.cci) would be *org.hyperledger.chaintool.example02/fcn/1*.  Because its function #1 in the org.hyperledger.chaintool.example02 interface.
 
 ### Output Protocol
 
@@ -368,9 +355,9 @@ message PaymentParams {
 //
 // Available RPC functions exported by this interface
 //
-// void MakePayment(PaymentParams) -> org.hyperledger.chaincode.example02/txn/1
-// void DeleteAccount(Entity) -> org.hyperledger.chaincode.example02/txn/2
-// BalanceResult CheckBalance(Entity) -> org.hyperledger.chaincode.example02/query/1
+// void MakePayment(PaymentParams) -> org.hyperledger.chaincode.example02/fcn/1
+// void DeleteAccount(Entity) -> org.hyperledger.chaincode.example02/fcn/2
+// BalanceResult CheckBalance(Entity) -> org.hyperledger.chaincode.example02/fcn/3
 ```
 ## Metadata
 
@@ -409,7 +396,7 @@ message Facts {
         repeated Fact facts = 1;
 }
 
-queries {
+functions {
         Interfaces GetInterfaces(GetInterfacesParams) = 1;
         InterfaceDescriptor GetInterface(GetInterfaceParams) = 2;
         Facts GetFacts(GetFactsParams) = 3;

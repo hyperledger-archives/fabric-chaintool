@@ -1,0 +1,20 @@
+{
+    "name": "chaintool-example02",
+    "version": "0.0.1",
+    "description": "",
+    "main": "client.js",
+    "dependencies": {
+        "protobufjs":"5.0.1",
+        "commander":"2.9.0",
+        "winston":"2.3.1"
+    },
+    "files": [
+        "protos",
+        "lib"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC"
+}

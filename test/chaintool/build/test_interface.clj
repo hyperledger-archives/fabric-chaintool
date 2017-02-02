@@ -150,7 +150,7 @@
 
 (def example-no-parameters
   "
-  queries {
+  functions {
       string Parameterless() = 1;
   }
 

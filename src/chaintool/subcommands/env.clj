@@ -1,5 +1,3 @@
-;; Copyright London Stock Exchange Group 2016 All Rights Reserved.
-;;
 ;; Licensed under the Apache License, Version 2.0 (the "License");
 ;; you may not use this file except in compliance with the License.
 ;; You may obtain a copy of the License at
@@ -12,14 +10,10 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-(ns chaintool.platforms.api)
+(ns chaintool.subcommands.env
+  (:require [chaintool.config.util :as config.util]
+            [chaintool.build.core :as build.core]))
 
-(defprotocol Platform
-  ;; Displays environment variables relevant to the build environment
-  (env [this params])
-  ;; Compiles the platform
-  (build [this params])
-  ;; Cleans any previous builds of the platform
-  (clean [this params])
-  ;; Packages the chaincode project according to the platform
-  (package [this params]))
+(defn run [options args]
+  (let [[path config] (config.util/load-from-options options)]
+    (build.core/env {:path path :config config})))

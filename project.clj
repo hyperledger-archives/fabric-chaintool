@@ -1,6 +1,6 @@
-(defproject chaintool "0.10.0"
-  :description "hyperledger chaincode tool"
-  :url "https://github.com/ghaskins/chaintool"
+(defproject chaintool "0.10.1"
+  :description "Hyperledger Fabric chaincode tool"
+  :url "https://github.com/hyperledger/fabric-chaintool"
   :license {:name "Apache License"
             :url "http://www.apache.org/licenses/LICENSE-2.0.txt"}
   :min-lein-version "2.0.0"

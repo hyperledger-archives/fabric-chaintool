@@ -3,6 +3,6 @@ message MyReturnType {
         string foo = 1;
 }
 
-queries {
+functions {
         MyReturnType TestParameterless() = 1;
 }

@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package chaincode
+package main
 
 import (
 	"fmt"
@@ -90,7 +90,7 @@ func (t *ChaincodeExample) CheckBalance(stub shim.ChaincodeStubInterface, param 
 
 func main() {
 	self := &ChaincodeExample{}
-	interfaces := ccs.Interfaces {
+	interfaces := ccs.Interfaces{
 		"org.hyperledger.chaincode.example02": self,
 		"appinit": self,
 	}

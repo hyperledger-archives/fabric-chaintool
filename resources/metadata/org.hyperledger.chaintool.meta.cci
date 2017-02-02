@@ -28,7 +28,7 @@ message Facts {
         repeated Fact facts = 1;
 }
 
-queries {
+functions {
         Interfaces GetInterfaces(GetInterfacesParams) = 1;
         InterfaceDescriptor GetInterface(GetInterfaceParams) = 2;
         Facts GetFacts(GetFactsParams) = 3;
