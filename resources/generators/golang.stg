@@ -365,8 +365,10 @@ implementhandler(txn) ::=
 <<
 func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
-	if len(args) != 1 {
-		return nil, errors.New("Expected exactly one argument")
+        var params string;
+
+	if len(args) > 0 {
+		params = args[0]
 	}
 
 	dispatcher, index, err := self.decodeFunction(<if(txn)>txnre<else>queryre<endif>, function)
@@ -374,7 +376,7 @@ func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub *shim.ChaincodeS
 		return nil, err
 	}
 
-        return dispatcher.Dispatch<if(txn)>Txn<else>Query<endif>(stub, index, args[0])
+        return dispatcher.Dispatch<if(txn)>Txn<else>Query<endif>(stub, index, params)
 }
 >>
 

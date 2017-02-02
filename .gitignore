@@ -10,3 +10,5 @@ pom.xml
 .lein-plugins
 .idea
 *.iml
+**/node_modules
+**/out
