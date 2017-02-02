@@ -21,6 +21,7 @@
             [chaintool.subcommands.package :as packagecmd]
             [chaintool.subcommands.proto :as protocmd]
             [chaintool.subcommands.unpack :as unpackcmd]
+            [chaintool.subcommands.env :as envcmd]
             [chaintool.util :as util]
             [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
@@ -77,6 +78,10 @@
     :arguments "path/to/file.car"
     :validate (fn [options arguments] (= (count arguments) 1))
     :options common-options}
+
+   {:name "env" :desc "Display variables used in the build environment"
+    :handler envcmd/run
+    :options common-path-options}
 
    {:name "proto" :desc "Compiles a CCI file to a .proto"
     :handler protocmd/run

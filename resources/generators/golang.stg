@@ -424,8 +424,14 @@ implementclient(txn, intf, func) ::=
 func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
 <if(func.rettype)>(*<func.rettype>, error)<else>error<endif> {
 
-     args := make([]string, 1)
+     <if(func.param)>
+     args := make([][]byte, 2)
+     <else>
+     args := make([][]byte, 1)
+     <endif>
      var err error
+
+     args[0] = []byte(<compositename(txn, intf, func)>)
 
      <if(func.param)>
      _pboutput, err := proto.Marshal(params)
@@ -433,10 +439,11 @@ func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.
           return <if(func.rettype)>nil, <endif>err
      }
 
-     args[0] = base64.StdEncoding.EncodeToString(_pboutput)
+     args[1] = make([]byte, base64.StdEncoding.EncodedLen(len(_pboutput)))
+     base64.StdEncoding.Encode(args[1], _pboutput)
      <endif>
 
-     <if(func.rettype)>_result, err :=<else>_, err =<endif> stub.<if(txn)>Invoke<else>Query<endif>Chaincode(chaincodeName, <compositename(txn, intf, func)>, args)
+     <if(func.rettype)>_result, err :=<else>_, err =<endif> stub.<if(txn)>Invoke<else>Query<endif>Chaincode(chaincodeName, args)
 
      <if(func.rettype)>
      result := &<func.rettype>{}
