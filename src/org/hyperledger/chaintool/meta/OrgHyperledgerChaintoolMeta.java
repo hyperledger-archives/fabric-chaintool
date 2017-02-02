@@ -6,7 +6,13 @@ package org.hyperledger.chaintool.meta;
 public final class OrgHyperledgerChaintoolMeta {
   private OrgHyperledgerChaintoolMeta() {}
   public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistryLite registry) {
+  }
+
+  public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   public interface InterfaceDescriptorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:org.hyperledger.chaintool.meta.InterfaceDescriptor)
@@ -31,11 +37,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.InterfaceDescriptor}
    */
   public  static final class InterfaceDescriptor extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.InterfaceDescriptor)
       InterfaceDescriptorOrBuilder {
     // Use InterfaceDescriptor.newBuilder() to construct.
-    private InterfaceDescriptor(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private InterfaceDescriptor(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private InterfaceDescriptor() {
@@ -50,7 +56,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private InterfaceDescriptor(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -81,11 +88,10 @@ public final class OrgHyperledgerChaintoolMeta {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
@@ -95,7 +101,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -158,7 +164,7 @@ public final class OrgHyperledgerChaintoolMeta {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
       if (!data_.isEmpty()) {
         output.writeBytes(2, data_);
@@ -171,7 +177,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
       if (!data_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
@@ -182,6 +188,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getData()
+          .equals(other.getData());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -205,34 +245,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -249,7 +295,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -257,7 +303,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.InterfaceDescriptor}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.InterfaceDescriptor)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -265,7 +311,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -278,12 +324,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -320,6 +367,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor)other);
@@ -355,7 +428,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -491,16 +564,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new InterfaceDescriptor(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -551,11 +615,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.Interfaces}
    */
   public  static final class Interfaces extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.Interfaces)
       InterfacesOrBuilder {
     // Use Interfaces.newBuilder() to construct.
-    private Interfaces(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Interfaces(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Interfaces() {
@@ -569,7 +633,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private Interfaces(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -591,17 +656,17 @@ public final class OrgHyperledgerChaintoolMeta {
                 descriptors_ = new java.util.ArrayList<org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              descriptors_.add(input.readMessage(org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor.parser(), extensionRegistry));
+              descriptors_.add(
+                  input.readMessage(org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor.parser(), extensionRegistry));
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           descriptors_ = java.util.Collections.unmodifiableList(descriptors_);
@@ -614,7 +679,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Interfaces_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Interfaces_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -687,6 +752,38 @@ public final class OrgHyperledgerChaintoolMeta {
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces) obj;
+
+      boolean result = true;
+      result = result && getDescriptorsList()
+          .equals(other.getDescriptorsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (getDescriptorsCount() > 0) {
+        hash = (37 * hash) + DESCRIPTORS_FIELD_NUMBER;
+        hash = (53 * hash) + getDescriptorsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -710,34 +807,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -754,7 +857,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -762,7 +865,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.Interfaces}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.Interfaces)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfacesOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -770,7 +873,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Interfaces_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Interfaces_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -783,12 +886,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getDescriptorsFieldBuilder();
         }
       }
@@ -836,6 +940,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces)other);
@@ -866,7 +996,7 @@ public final class OrgHyperledgerChaintoolMeta {
               descriptors_ = other.descriptors_;
               bitField0_ = (bitField0_ & ~0x00000001);
               descriptorsBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getDescriptorsFieldBuilder() : null;
             } else {
               descriptorsBuilder_.addAllMessages(other.descriptors_);
@@ -890,7 +1020,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Interfaces) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -909,7 +1039,7 @@ public final class OrgHyperledgerChaintoolMeta {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptorOrBuilder> descriptorsBuilder_;
 
       /**
@@ -1125,11 +1255,11 @@ public final class OrgHyperledgerChaintoolMeta {
            getDescriptorsBuilderList() {
         return getDescriptorsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptorOrBuilder> 
           getDescriptorsFieldBuilder() {
         if (descriptorsBuilder_ == null) {
-          descriptorsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          descriptorsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptor.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.InterfaceDescriptorOrBuilder>(
                   descriptors_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
@@ -1169,16 +1299,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Interfaces(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -1210,11 +1331,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.GetInterfacesParams}
    */
   public  static final class GetInterfacesParams extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.GetInterfacesParams)
       GetInterfacesParamsOrBuilder {
     // Use GetInterfacesParams.newBuilder() to construct.
-    private GetInterfacesParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private GetInterfacesParams(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private GetInterfacesParams() {
@@ -1228,7 +1349,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private GetInterfacesParams(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -1253,11 +1375,10 @@ public final class OrgHyperledgerChaintoolMeta {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
@@ -1267,7 +1388,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -1314,6 +1435,37 @@ public final class OrgHyperledgerChaintoolMeta {
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams) obj;
+
+      boolean result = true;
+      result = result && (getIncludeContent()
+          == other.getIncludeContent());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + INCLUDECONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIncludeContent());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1337,34 +1489,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -1381,7 +1539,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1389,7 +1547,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.GetInterfacesParams}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.GetInterfacesParams)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParamsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -1397,7 +1555,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1410,12 +1568,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -1449,6 +1608,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams)other);
@@ -1480,7 +1665,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfacesParams) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1544,16 +1729,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new GetInterfacesParams(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -1590,11 +1766,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.GetInterfaceParams}
    */
   public  static final class GetInterfaceParams extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.GetInterfaceParams)
       GetInterfaceParamsOrBuilder {
     // Use GetInterfaceParams.newBuilder() to construct.
-    private GetInterfaceParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private GetInterfaceParams(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private GetInterfaceParams() {
@@ -1608,7 +1784,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private GetInterfaceParams(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -1634,11 +1811,10 @@ public final class OrgHyperledgerChaintoolMeta {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
@@ -1648,7 +1824,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -1702,7 +1878,7 @@ public final class OrgHyperledgerChaintoolMeta {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
     }
 
@@ -1712,13 +1888,43 @@ public final class OrgHyperledgerChaintoolMeta {
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1742,34 +1948,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -1786,7 +1998,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1794,7 +2006,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.GetInterfaceParams}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.GetInterfaceParams)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParamsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -1802,7 +2014,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1815,12 +2027,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -1854,6 +2067,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams)other);
@@ -1886,7 +2125,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetInterfaceParams) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1993,16 +2232,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new GetInterfaceParams(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -2029,11 +2259,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.GetFactsParams}
    */
   public  static final class GetFactsParams extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.GetFactsParams)
       GetFactsParamsOrBuilder {
     // Use GetFactsParams.newBuilder() to construct.
-    private GetFactsParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private GetFactsParams(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private GetFactsParams() {
@@ -2046,7 +2276,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private GetFactsParams(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       try {
         boolean done = false;
@@ -2065,11 +2296,10 @@ public final class OrgHyperledgerChaintoolMeta {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
@@ -2079,7 +2309,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetFactsParams_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetFactsParams_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -2110,6 +2340,32 @@ public final class OrgHyperledgerChaintoolMeta {
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams) obj;
+
+      boolean result = true;
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2133,34 +2389,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -2177,7 +2439,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2185,7 +2447,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.GetFactsParams}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.GetFactsParams)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParamsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -2193,7 +2455,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetFactsParams_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_GetFactsParams_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2206,12 +2468,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -2242,6 +2505,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams)other);
@@ -2270,7 +2559,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.GetFactsParams) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2308,16 +2597,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new GetFactsParams(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -2368,11 +2648,11 @@ public final class OrgHyperledgerChaintoolMeta {
    * Protobuf type {@code org.hyperledger.chaintool.meta.Facts}
    */
   public  static final class Facts extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.Facts)
       FactsOrBuilder {
     // Use Facts.newBuilder() to construct.
-    private Facts(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Facts(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Facts() {
@@ -2386,7 +2666,8 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     private Facts(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -2408,17 +2689,17 @@ public final class OrgHyperledgerChaintoolMeta {
                 facts_ = new java.util.ArrayList<org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              facts_.add(input.readMessage(org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact.parser(), extensionRegistry));
+              facts_.add(
+                  input.readMessage(org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact.parser(), extensionRegistry));
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           facts_ = java.util.Collections.unmodifiableList(facts_);
@@ -2431,7 +2712,7 @@ public final class OrgHyperledgerChaintoolMeta {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -2466,11 +2747,11 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.Facts.Fact}
      */
     public  static final class Fact extends
-        com.google.protobuf.GeneratedMessage implements
+        com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:org.hyperledger.chaintool.meta.Facts.Fact)
         FactOrBuilder {
       // Use Fact.newBuilder() to construct.
-      private Fact(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      private Fact(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
       private Fact() {
@@ -2485,7 +2766,8 @@ public final class OrgHyperledgerChaintoolMeta {
       }
       private Fact(
           com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
         this();
         int mutable_bitField0_ = 0;
         try {
@@ -2517,11 +2799,10 @@ public final class OrgHyperledgerChaintoolMeta {
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw new RuntimeException(e.setUnfinishedMessage(this));
+          throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
-          throw new RuntimeException(
-              new com.google.protobuf.InvalidProtocolBufferException(
-                  e.getMessage()).setUnfinishedMessage(this));
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
         } finally {
           makeExtensionsImmutable();
         }
@@ -2531,7 +2812,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_Fact_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_Fact_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2619,10 +2900,10 @@ public final class OrgHyperledgerChaintoolMeta {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (!getNameBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
         }
         if (!getValueBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessage.writeString(output, 2, value_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, value_);
         }
       }
 
@@ -2632,16 +2913,50 @@ public final class OrgHyperledgerChaintoolMeta {
 
         size = 0;
         if (!getNameBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
         }
         if (!getValueBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessage.computeStringSize(2, value_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, value_);
         }
         memoizedSize = size;
         return size;
       }
 
       private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact)) {
+          return super.equals(obj);
+        }
+        org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact) obj;
+
+        boolean result = true;
+        result = result && getName()
+            .equals(other.getName());
+        result = result && getValue()
+            .equals(other.getValue());
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptorForType().hashCode();
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
+        hash = (37 * hash) + VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getValue().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2665,34 +2980,40 @@ public final class OrgHyperledgerChaintoolMeta {
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
       public Builder newBuilderForType() { return newBuilder(); }
@@ -2709,7 +3030,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
       @java.lang.Override
       protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
       }
@@ -2717,7 +3038,7 @@ public final class OrgHyperledgerChaintoolMeta {
        * Protobuf type {@code org.hyperledger.chaintool.meta.Facts.Fact}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.Facts.Fact)
           org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.FactOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
@@ -2725,7 +3046,7 @@ public final class OrgHyperledgerChaintoolMeta {
           return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_Fact_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_Fact_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -2738,12 +3059,13 @@ public final class OrgHyperledgerChaintoolMeta {
         }
 
         private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
           super(parent);
           maybeForceBuilderInitialization();
         }
         private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
           }
         }
         public Builder clear() {
@@ -2780,6 +3102,32 @@ public final class OrgHyperledgerChaintoolMeta {
           return result;
         }
 
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact) {
             return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact)other);
@@ -2816,7 +3164,7 @@ public final class OrgHyperledgerChaintoolMeta {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
             parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact) e.getUnfinishedMessage();
-            throw e;
+            throw e.unwrapIOException();
           } finally {
             if (parsedMessage != null) {
               mergeFrom(parsedMessage);
@@ -2992,16 +3340,7 @@ public final class OrgHyperledgerChaintoolMeta {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          try {
             return new Fact(input, extensionRegistry);
-          } catch (RuntimeException e) {
-            if (e.getCause() instanceof
-                com.google.protobuf.InvalidProtocolBufferException) {
-              throw (com.google.protobuf.InvalidProtocolBufferException)
-                  e.getCause();
-            }
-            throw e;
-          }
         }
       };
 
@@ -3086,6 +3425,38 @@ public final class OrgHyperledgerChaintoolMeta {
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts)) {
+        return super.equals(obj);
+      }
+      org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts other = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts) obj;
+
+      boolean result = true;
+      result = result && getFactsList()
+          .equals(other.getFactsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (getFactsCount() > 0) {
+        hash = (37 * hash) + FACTS_FIELD_NUMBER;
+        hash = (53 * hash) + getFactsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3109,34 +3480,40 @@ public final class OrgHyperledgerChaintoolMeta {
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -3153,7 +3530,7 @@ public final class OrgHyperledgerChaintoolMeta {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3161,7 +3538,7 @@ public final class OrgHyperledgerChaintoolMeta {
      * Protobuf type {@code org.hyperledger.chaintool.meta.Facts}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:org.hyperledger.chaintool.meta.Facts)
         org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.FactsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -3169,7 +3546,7 @@ public final class OrgHyperledgerChaintoolMeta {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.internal_static_org_hyperledger_chaintool_meta_Facts_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -3182,12 +3559,13 @@ public final class OrgHyperledgerChaintoolMeta {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getFactsFieldBuilder();
         }
       }
@@ -3235,6 +3613,32 @@ public final class OrgHyperledgerChaintoolMeta {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts) {
           return mergeFrom((org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts)other);
@@ -3265,7 +3669,7 @@ public final class OrgHyperledgerChaintoolMeta {
               facts_ = other.facts_;
               bitField0_ = (bitField0_ & ~0x00000001);
               factsBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getFactsFieldBuilder() : null;
             } else {
               factsBuilder_.addAllMessages(other.facts_);
@@ -3289,7 +3693,7 @@ public final class OrgHyperledgerChaintoolMeta {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3308,7 +3712,7 @@ public final class OrgHyperledgerChaintoolMeta {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.FactOrBuilder> factsBuilder_;
 
       /**
@@ -3524,11 +3928,11 @@ public final class OrgHyperledgerChaintoolMeta {
            getFactsBuilderList() {
         return getFactsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.FactOrBuilder> 
           getFactsFieldBuilder() {
         if (factsBuilder_ == null) {
-          factsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          factsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.Fact.Builder, org.hyperledger.chaintool.meta.OrgHyperledgerChaintoolMeta.Facts.FactOrBuilder>(
                   facts_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
@@ -3568,16 +3972,7 @@ public final class OrgHyperledgerChaintoolMeta {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Facts(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -3596,47 +3991,47 @@ public final class OrgHyperledgerChaintoolMeta {
 
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_Interfaces_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_Interfaces_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_GetFactsParams_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_GetFactsParams_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_Facts_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_Facts_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_hyperledger_chaintool_meta_Facts_Fact_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_hyperledger_chaintool_meta_Facts_Fact_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -3667,43 +4062,43 @@ public final class OrgHyperledgerChaintoolMeta {
     internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_InterfaceDescriptor_descriptor,
         new java.lang.String[] { "Name", "Data", });
     internal_static_org_hyperledger_chaintool_meta_Interfaces_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_org_hyperledger_chaintool_meta_Interfaces_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_Interfaces_descriptor,
         new java.lang.String[] { "Descriptors", });
     internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_GetInterfacesParams_descriptor,
         new java.lang.String[] { "IncludeContent", });
     internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_GetInterfaceParams_descriptor,
         new java.lang.String[] { "Name", });
     internal_static_org_hyperledger_chaintool_meta_GetFactsParams_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_org_hyperledger_chaintool_meta_GetFactsParams_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_GetFactsParams_descriptor,
         new java.lang.String[] { });
     internal_static_org_hyperledger_chaintool_meta_Facts_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_org_hyperledger_chaintool_meta_Facts_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_Facts_descriptor,
         new java.lang.String[] { "Facts", });
     internal_static_org_hyperledger_chaintool_meta_Facts_Fact_descriptor =
       internal_static_org_hyperledger_chaintool_meta_Facts_descriptor.getNestedTypes().get(0);
     internal_static_org_hyperledger_chaintool_meta_Facts_Fact_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_hyperledger_chaintool_meta_Facts_Fact_descriptor,
         new java.lang.String[] { "Name", "Value", });
   }

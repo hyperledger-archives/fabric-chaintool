@@ -16,15 +16,7 @@
             [chaintool.platforms.api :as platforms.api])
   (:refer-clojure :exclude [compile]))
 
-
-(defn- run [fcn {:keys [config] :as params}]
+(defn compile [{:keys [config] :as params}]
   (when-let [platform (platforms.core/find config)]
-    (fcn platform params)))
-
-;; generate platform output (shim, protobufs, etc)
-(defn compile [params]
-  (run platforms.api/build params))
-
-;; display environment variables used for build
-(defn env [params]
-  (run platforms.api/env params))
+    ;; generate platform output (shim, protobufs, etc)
+    (platforms.api/build platform params)))

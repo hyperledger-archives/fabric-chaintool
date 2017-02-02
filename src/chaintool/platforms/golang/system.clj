@@ -42,11 +42,6 @@
   platforms.api/Platform
 
   ;;-----------------------------------------------------------------
-  ;; env - Emits the GOPATH used for building system chaincode
-  ;;-----------------------------------------------------------------
-  (env [_ _])
-
-  ;;-----------------------------------------------------------------
   ;; build - generates all golang platform artifacts within the
   ;; default location in the build area
   ;;-----------------------------------------------------------------

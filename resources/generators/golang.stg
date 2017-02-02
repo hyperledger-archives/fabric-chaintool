@@ -35,7 +35,9 @@ var txnre   = regexp.MustCompile("([a-zA-Z0-9.]*)/txn/([0-9]*)")
 var queryre = regexp.MustCompile("([a-zA-Z0-9.]*)/query/([0-9]*)")
 
 // Initialization function, called only once
-func (self *stubHandler) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (self *stubHandler) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
+
+	function, args := stub.GetFunctionAndParameters()
 
 	if len(args) != 1 {
 		return nil, errors.New("Expected exactly one argument")
@@ -363,7 +365,9 @@ case function == <func.index>:
 
 implementhandler(txn) ::=
 <<
-func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub shim.ChaincodeStubInterface) ([]byte, error) {
+
+	function, args := stub.GetFunctionAndParameters()
 
         var params string;
 
@@ -424,14 +428,8 @@ implementclient(txn, intf, func) ::=
 func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
 <if(func.rettype)>(*<func.rettype>, error)<else>error<endif> {
 
-     <if(func.param)>
-     args := make([][]byte, 2)
-     <else>
-     args := make([][]byte, 1)
-     <endif>
+     args := make([]string, 1)
      var err error
-
-     args[0] = []byte(<compositename(txn, intf, func)>)
 
      <if(func.param)>
      _pboutput, err := proto.Marshal(params)
@@ -439,11 +437,10 @@ func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.
           return <if(func.rettype)>nil, <endif>err
      }
 
-     args[1] = make([]byte, base64.StdEncoding.EncodedLen(len(_pboutput)))
-     base64.StdEncoding.Encode(args[1], _pboutput)
+     args[0] = base64.StdEncoding.EncodeToString(_pboutput)
      <endif>
 
-     <if(func.rettype)>_result, err :=<else>_, err =<endif> stub.<if(txn)>Invoke<else>Query<endif>Chaincode(chaincodeName, args)
+     <if(func.rettype)>_result, err :=<else>_, err =<endif> stub.<if(txn)>Invoke<else>Query<endif>Chaincode(chaincodeName, <compositename(txn, intf, func)>, args)
 
      <if(func.rettype)>
      result := &<func.rettype>{}

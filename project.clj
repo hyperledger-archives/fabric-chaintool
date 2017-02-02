@@ -1,11 +1,11 @@
-(defproject chaintool "0.9.2"
-  :description "Hyperledger Fabric chaincode tool"
-  :url "https://github.com/hyperledger/fabric-chaintool"
+(defproject chaintool "0.10.0"
+  :description "hyperledger chaincode tool"
+  :url "https://github.com/ghaskins/chaintool"
   :license {:name "Apache License"
             :url "http://www.apache.org/licenses/LICENSE-2.0.txt"}
   :min-lein-version "2.0.0"
   :lein-release {:deploy-via :shell :shell ["true"]}
-  :javac-options ["-target" "1.7" "-source" "1.7"]
+  :javac-options ["-target" "1.8" "-source" "1.8"]
   :jvm-opts ["-server"]
   :java-source-paths ["src"]
   :plugins [[lein-bin "0.3.5"]]
@@ -18,7 +18,7 @@
                  [org.antlr/ST4 "4.0.8"]
                  [me.raynes/conch "0.8.0"]
                  [me.raynes/fs "1.4.6"]
-                 [org.clojars.ghaskins/protobuf "0.2"]
+                 [org.clojars.ghaskins/protobuf "3.0.2-2"]
                  [commons-io/commons-io "2.5"]
                  [org.tukaani/xz "1.5"]
                  [org.apache.commons/commons-compress "1.11"]

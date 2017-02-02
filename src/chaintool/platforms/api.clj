@@ -15,8 +15,6 @@
 (ns chaintool.platforms.api)
 
 (defprotocol Platform
-  ;; Displays environment variables relevant to the build environment
-  (env [this params])
   ;; Compiles the platform
   (build [this params])
   ;; Cleans any previous builds of the platform
