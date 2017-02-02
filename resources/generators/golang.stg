@@ -35,7 +35,7 @@ var txnre   = regexp.MustCompile("([a-zA-Z0-9.]*)/txn/([0-9]*)")
 var queryre = regexp.MustCompile("([a-zA-Z0-9.]*)/query/([0-9]*)")
 
 // Initialization function, called only once
-func (self *stubHandler) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (self *stubHandler) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
 	if len(args) != 1 {
 		return nil, errors.New("Expected exactly one argument")
@@ -146,8 +146,8 @@ import (
 )
 
 type Dispatcher interface {
-     DispatchTxn(stub *shim.ChaincodeStub, function int, params string) ([]byte, error)
-     DispatchQuery(stub *shim.ChaincodeStub, function int, params string) ([]byte, error)
+     DispatchTxn(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error)
+     DispatchQuery(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error)
 }
 
 type Factory interface {
@@ -206,7 +206,7 @@ var facts = &meta.Facts {
 type ChaincodeMetaData struct {
 }
 
-func (self *ChaincodeMetaData) GetInterfaces(stub *shim.ChaincodeStub, params *meta.GetInterfacesParams) (*meta.Interfaces, error) {
+func (self *ChaincodeMetaData) GetInterfaces(stub shim.ChaincodeStubInterface, params *meta.GetInterfacesParams) (*meta.Interfaces, error) {
 
 	response := &meta.Interfaces{}
 	for name, data := range interfaces {
@@ -222,7 +222,7 @@ func (self *ChaincodeMetaData) GetInterfaces(stub *shim.ChaincodeStub, params *m
 	return response, nil
 }
 
-func (self *ChaincodeMetaData) GetInterface(stub *shim.ChaincodeStub, params *meta.GetInterfaceParams) (*meta.InterfaceDescriptor, error) {
+func (self *ChaincodeMetaData) GetInterface(stub shim.ChaincodeStubInterface, params *meta.GetInterfaceParams) (*meta.InterfaceDescriptor, error) {
 
 	intf, ok := interfaces[params.Name]
 	if !ok {
@@ -232,7 +232,7 @@ func (self *ChaincodeMetaData) GetInterface(stub *shim.ChaincodeStub, params *me
 	return &meta.InterfaceDescriptor{Data: intf}, nil
 }
 
-func (self *ChaincodeMetaData) GetFacts(stub *shim.ChaincodeStub, params *meta.GetFactsParams) (*meta.Facts, error) {
+func (self *ChaincodeMetaData) GetFacts(stub shim.ChaincodeStubInterface, params *meta.GetFactsParams) (*meta.Facts, error) {
 
 	return facts, nil
 }
@@ -284,7 +284,7 @@ func (self *factoryImpl) Create(intf interface{}) (api.Dispatcher, error) {
      return &stubImpl{intf: intf.(CCInterface)}, nil
 }
 
-func (self *stubImpl) DispatchTxn(stub *shim.ChaincodeStub, function int, params string) ([]byte, error) {
+func (self *stubImpl) DispatchTxn(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error) {
         // Handle different functions
         switch {
         <dispatchfunctions(true, intf, intf.transactions)>
@@ -293,7 +293,7 @@ func (self *stubImpl) DispatchTxn(stub *shim.ChaincodeStub, function int, params
         }
 }
 
-func (self *stubImpl) DispatchQuery(stub *shim.ChaincodeStub, function int, params string) ([]byte, error) {
+func (self *stubImpl) DispatchQuery(stub shim.ChaincodeStubInterface, function int, params string) ([]byte, error) {
         // Handle different functions
         switch {
         <dispatchfunctions(true, intf, intf.queries)>
@@ -352,7 +352,7 @@ dispatchfunctions(txn, intf, functions) ::= "<functions.values:{x | <dispatchfun
 
 declarefunctions(intf, functions) ::=
 <<
-<functions.values:{x | <x.name>(*shim.ChaincodeStub<if(x.param)>, *<x.param><endif>) <if(x.rettype)>(*<x.rettype>, error)<else>error<endif> }; separator="\n">
+<functions.values:{x | <x.name>(shim.ChaincodeStubInterface<if(x.param)>, *<x.param><endif>) <if(x.rettype)>(*<x.rettype>, error)<else>error<endif> }; separator="\n">
 >>
 
 dispatchfunction(txn, intf, func) ::=
@@ -363,7 +363,7 @@ case function == <func.index>:
 
 implementhandler(txn) ::=
 <<
-func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
         var params string;
 
@@ -383,7 +383,7 @@ func (self *stubHandler) <if(txn)>Invoke<else>Query<endif>(stub *shim.ChaincodeS
 implementserver(intf, func) ::=
 <<
 
-func (self *stubImpl) proxy<func.name>(stub *shim.ChaincodeStub, _params string) ([]byte, error) {
+func (self *stubImpl) proxy<func.name>(stub shim.ChaincodeStubInterface, _params string) ([]byte, error) {
 
      var err error;
 
@@ -421,7 +421,7 @@ func (self *stubImpl) proxy<func.name>(stub *shim.ChaincodeStub, _params string)
 implementclient(txn, intf, func) ::=
 <<
 
-func <func.name>(stub *shim.ChaincodeStub, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
+func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
 <if(func.rettype)>(*<func.rettype>, error)<else>error<endif> {
 
      args := make([]string, 1)

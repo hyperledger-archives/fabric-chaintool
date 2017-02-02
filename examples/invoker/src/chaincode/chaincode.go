@@ -33,7 +33,7 @@ type ChaincodeExample struct {
 }
 
 // Called to initialize the chaincode
-func (t *ChaincodeExample) Init(stub *shim.ChaincodeStub, param *appinit.Init) error {
+func (t *ChaincodeExample) Init(stub shim.ChaincodeStubInterface, param *appinit.Init) error {
 
 	var err error
 
@@ -47,7 +47,7 @@ func (t *ChaincodeExample) Init(stub *shim.ChaincodeStub, param *appinit.Init) e
 }
 
 // Transaction makes payment of X units from A to B
-func (t *ChaincodeExample) MakePayment(stub *shim.ChaincodeStub, param *example02.PaymentParams) error {
+func (t *ChaincodeExample) MakePayment(stub shim.ChaincodeStubInterface, param *example02.PaymentParams) error {
 
 	var err error
 
@@ -61,7 +61,7 @@ func (t *ChaincodeExample) MakePayment(stub *shim.ChaincodeStub, param *example0
 }
 
 // Deletes an entity from state
-func (t *ChaincodeExample) DeleteAccount(stub *shim.ChaincodeStub, param *example02.Entity) error {
+func (t *ChaincodeExample) DeleteAccount(stub shim.ChaincodeStubInterface, param *example02.Entity) error {
 
 	var err error
 
@@ -75,7 +75,7 @@ func (t *ChaincodeExample) DeleteAccount(stub *shim.ChaincodeStub, param *exampl
 }
 
 // Query callback representing the query of a chaincode
-func (t *ChaincodeExample) CheckBalance(stub *shim.ChaincodeStub, param *example02.Entity) (*example02.BalanceResult, error) {
+func (t *ChaincodeExample) CheckBalance(stub shim.ChaincodeStubInterface, param *example02.Entity) (*example02.BalanceResult, error) {
 
 	var err error
 

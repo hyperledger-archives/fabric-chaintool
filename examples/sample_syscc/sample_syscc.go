@@ -28,7 +28,7 @@ import (
 type SampleSysCC struct {
 }
 
-func (t *SampleSysCC) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SampleSysCC) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	var key, val string    // Entities
 
 	if len(args) != 2 {
@@ -48,7 +48,7 @@ func (t *SampleSysCC) Init(stub *shim.ChaincodeStub, function string, args []str
 }
 
 // Transaction makes payment of X units from A to B
-func (t *SampleSysCC) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SampleSysCC) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	var key, val string    // Entities
 
 	if len(args) != 2 {
@@ -75,7 +75,7 @@ func (t *SampleSysCC) Invoke(stub *shim.ChaincodeStub, function string, args []s
 }
 
 // Query callback representing the query of a chaincode
-func (t *SampleSysCC) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SampleSysCC) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	if function != "getval" {
 		return nil, errors.New("Invalid query function name. Expecting \"getval\"")
 	}

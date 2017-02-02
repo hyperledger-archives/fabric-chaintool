@@ -73,9 +73,9 @@ queries {
 ```
 requires a function signature that looks like:
 ```
-func (t *ChaincodeExample) CheckBalance(stub *shim.ChaincodeStub, param *example02.Entity) (*example02.BalanceResult, error) {}
+func (t *ChaincodeExample) CheckBalance(stub shim.ChaincodeStubInterface, param *example02.Entity) (*example02.BalanceResult, error) {}
 ```
-Every callback requires a shim.ChaincodeStub pointer as its first parameter, followed by an input parameter and return parameter as declared in the interface definition.  Functions that return _void_ simply return a single _error_ rather than _(type, error)_.
+Every callback requires a shim.ChaincodeStubInterface as its first parameter, followed by an input parameter and return parameter as declared in the interface definition.  Functions that return _void_ simply return a single _error_ rather than _(type, error)_.
 ## Generated Code File Structure
 ### Overview
 All generated code is placed in directories rooted at $PROJECT_ROOT/build which, as mentioned earlier, is implicitly included in the $GOPATH. Interfaces are emitted to $PROJECT_ROOT/build/src/hyperledger/cci/..., and general chaincode support stubs are emitted to $PROJECT_ROOT/build/src/hyperledger/ccs.

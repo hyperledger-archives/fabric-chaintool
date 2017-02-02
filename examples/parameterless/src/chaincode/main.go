@@ -33,12 +33,12 @@ type ChaincodeExample struct {
 }
 
 // Called to initialize the chaincode
-func (t *ChaincodeExample) Init(stub *shim.ChaincodeStub, param *appinit.Init) error {
+func (t *ChaincodeExample) Init(stub shim.ChaincodeStubInterface, param *appinit.Init) error {
 
 	return nil
 }
 
-func (t *ChaincodeExample) TestParameterless(stub *shim.ChaincodeStub) (*app.MyReturnType, error) {
+func (t *ChaincodeExample) TestParameterless(stub shim.ChaincodeStubInterface) (*app.MyReturnType, error) {
 	return nil, nil
 }
 
