@@ -1,0 +1,35 @@
+
+message InterfaceDescriptor {
+        string name = 1;
+        bytes  data = 2;
+}
+
+message Interfaces {
+        repeated InterfaceDescriptor descriptors = 1;
+}
+
+message GetInterfacesParams {
+        bool IncludeContent = 1;
+}
+
+message GetInterfaceParams {
+        string name = 1;
+}
+
+message GetFactsParams {
+}
+
+message Facts {
+	message Fact {
+		string name = 1;
+		string value = 2;
+	}
+
+        repeated Fact facts = 1;
+}
+
+queries {
+        Interfaces GetInterfaces(GetInterfacesParams) = 1;
+        InterfaceDescriptor GetInterface(GetInterfaceParams) = 2;
+        Facts GetFacts(GetFactsParams) = 3;
+}

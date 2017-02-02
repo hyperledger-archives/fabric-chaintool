@@ -1,0 +1,18 @@
+# ----------------------------------
+# chaincode example "parameterless"
+# ----------------------------------
+#
+# Copyright (C) 2016 - Hyperledger
+# All rights reserved
+#
+
+Schema:  1
+Name:    org.hyperledger.chaincode.example.parameterless
+Version: 0.1-SNAPSHOT
+
+Platform:
+        Name: org.hyperledger.chaincode.golang
+        Version: 1
+
+Provides: [self]
+Consumes: [org.hyperledger.chaincode.example.parameterless]

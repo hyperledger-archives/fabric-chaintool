@@ -1,0 +1,4 @@
+
+message Init {
+        string address = 1;
+}

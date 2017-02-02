@@ -1,0 +1,131 @@
+/*
+Copyright London Stock Exchange Group 2016 All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+                 http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+/*
+*************************************************************************************
+
+    We create a new archive format called CAR (chaincode archive) to package up
+    chaincode assets.  Our first approach was to reuse an existing archive format/tooling
+    (e.g. tar, zip, etc).  However, most had problems with determinisim.  For instance,
+    tar injects things like UIDs and timestamps into the binary, which could result
+    in a different binary each time regardless of code content.
+
+    The "ar" tool from binutils showed some promise with explicit support for determinism,
+    but its focus on elf containers seemed inappropriate.  In the end, we realized it
+    might be more straightforward to leverage our existing investment in protobufs and
+    build our own custom format.  It's not all that complicated anyway (famous last words).
+
+    The current implementation is somewhat naive in that it assumes that the compressed
+    contents of the archive will have no problem fitting in memory and/or a single
+    protobuf object (defaults to 64MB max, I think).  This is ok.  For one, chaincode
+    packages by definition should strive to be as small as possible since they
+    need to be distributed around and persisted on the ledger.  We certainly don't want to
+    encourage anyone to submit really huge applications by making it easy to package one
+    up ;).  If this ever changes, the fundamental nature of protobufs should allow us
+    to be creative in enhancing the capabilities without breaking compatibility.
+
+    ---- Schema -----
+
+    current definition {:magic "org.hyperledger.chaincode-archive" :version 1}
+
+    A given archive file consists of two primary protobuf objects:
+
+                    [[delim] CompatibilityHeader, [delim] Archive]
+
+    that are written with the java .writeDelimitedTo() (https://goo.gl/8NeMkT) function.
+    The delimimter is a simple size indicator, the specifications of which are left
+    as an exercise for the reader.  The rest of the specification should be
+    understandable to someone fluent in protobuf definitions, as per below.
+
+    A few notes:
+
+      1) Generally speaking, for a given {:magic :version} tuple, the
+         CompatibilityHeader should never, ever, ever be modified in a way that breaks
+         backwards/forward compatibility.  It is, however, ok to extend it using standard
+         protobuf techniques should that ever be necessary.  Most enhancements should be
+         done via the "features" facility.  For example:
+
+               features = ["org.hyperledger.car.enhancement23", "com.acme.gizmo.awesome"]
+
+         may indicate that certain features are present.  Components that understand
+         what that means may react to the presence of the feature flag.  Those that
+         do not should be able to safely ignore it (generally relying on protobuf
+         techniques to avoid incongruent structures)
+      2) If breaking compatibility is unvoidable, you _must_ modify either one or both
+         of the {:magic :version} tuple.  Changing either one is a statment of gross
+         incompatibility with orthogonal version tuples. This is generally only done
+         in extreme circumstances as an alternative to leaving software with no
+         deterministic method to detect a problem.
+      3) There is an intentional level of indirection between Archive and Payload to
+         facilitate ease in generating a comprehensive signature.  Achive.payload is
+         expected to be the raw binary serialized form of Achive::Payload.
+      4) The top-level Archive object should generally strive to remain as lightweight
+         as possible to encapsulate as many fields as possible under the signature
+         algorithm.
+
+***************************************************************************************
+*/
+
+syntax = "proto2";
+package chaintool.car.abi;
+
+message CompatibilityHeader {
+    required string magic    = 1;
+    required int32  version  = 2;
+    repeated string features = 3;
+}
+
+message Archive {
+    message Signature {
+        enum Type {
+            NONE = 1;
+            RSA  = 2;
+        }
+
+        optional Type   type        = 1;
+        optional string description = 2;
+        optional bytes  data        = 3;
+    }
+
+    message Payload {
+        message Compression {
+            enum Type {
+                NONE  = 1;
+                GZIP  = 2;
+                LZMA  = 3;
+                BZIP2 = 4;
+                XZ    = 5;
+            }
+
+            optional Type   type        = 1 [default = NONE];
+            optional string description = 2;
+        }
+
+        message Entries {
+            optional string    path      = 1;
+            optional uint64    size      = 2;
+            optional string    sha1      = 3;
+            optional bytes     data      = 16;
+        }
+
+        optional Compression compression = 1;
+        repeated Entries     entries     = 16;
+    }
+
+    optional Signature   signature   = 1;
+    optional bytes       payload     = 2;
+}

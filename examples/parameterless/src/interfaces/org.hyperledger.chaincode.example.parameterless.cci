@@ -1,0 +1,8 @@
+
+message MyReturnType {
+        string foo = 1;
+}
+
+queries {
+        MyReturnType TestParameterless() = 1;
+}

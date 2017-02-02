@@ -1,0 +1,26 @@
+
+# -----------------------------------------------------------------------
+# chaincode invoker
+# -----------------------------------------------------------------------
+#
+# Copyright (C) 2016 - Hyperledger
+# All rights reserved
+#
+# This example demonstrates chaincode to chaincode invoke.  This example
+# consumes the services of our example02 chaincode
+#
+
+Schema:  1
+Name:    org.hyperledger.chaincode.example.invoker
+Version: 0.1-SNAPSHOT
+
+Platform:
+        Name: org.hyperledger.chaincode.golang
+        Version: 1
+
+Provides: [org.hyperledger.chaincode.example02]
+Consumes: [org.hyperledger.chaincode.example02]
+
+
+
+
