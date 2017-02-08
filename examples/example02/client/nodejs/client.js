@@ -31,7 +31,7 @@ function createRequest(fcn, args) {
         chainId: 'testchainid',
         chaincodeId: 'mycc',
         fcn: fcn,
-        args: [args.toBase64()],
+        args: [args.toBuffer()],
         txId: tx_id,
         nonce: nonce
     };
@@ -93,7 +93,7 @@ function checkBalance(args) {
     return sendQuery('org.hyperledger.chaincode.example02/fcn/3',
                      new app.Entity(args))
         .then(function(results) {
-            return app.BalanceResult.decode64(results[0].toString('utf-8'));
+            return app.BalanceResult.decode(results[0]);
         });
 }
 

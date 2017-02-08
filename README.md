@@ -310,7 +310,7 @@ message ChaincodeInput {
 
 }
 ```
-Chaintool deterministically maps functions declared within a CCI to an [encoded function name](#function-encoding), and expects the corresponding input parameter to be a base64 encoded protobuf message as the first and only arg string.
+Chaintool deterministically maps functions declared within a CCI to an [encoded function name](#function-encoding), and expects the corresponding input parameter to be a serialized protobuf message as the first and only arg string.
 
 Example:
 ```
@@ -323,7 +323,7 @@ Function naming follows the convention *interface-name/method-type/method-index*
 
 ### Output Protocol
 
-Standard chaincode protocol allows chaincode applications to return a string to a caller.  Chaintool managed applications will encode this string with a base64 encoded protobuf structure (when applicable).
+Standard chaincode protocol allows chaincode applications to return a byte-array payload to a caller.  Chaintool managed applications will encode this payload with a serialized protobuf structure (when applicable).
 
 ### Protobuf "hints"
 
