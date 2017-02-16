@@ -56,7 +56,10 @@
       (let [gobin (io/file builddir "bin")]
         (io/make-parents (io/file gobin ".dummy"))
         (io/make-parents output)
-        (go-cmd path {"GOBIN" (.getCanonicalPath gobin)} "build" "-o" (.getCanonicalPath output) "chaincode"))
+        (go-cmd path {"GOBIN" (.getCanonicalPath gobin)}
+                "build" "-o" (.getCanonicalPath output)
+                "-ldflags" "-linkmode external -extldflags '-static'"
+                "chaincode"))
 
       (println "Compilation complete")))
 
