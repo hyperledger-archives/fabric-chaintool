@@ -1,4 +1,4 @@
-(defproject chaintool "0.10.3-SNAPSHOT"
+(defproject chaintool "0.10.3"
   :description "Hyperledger Fabric chaincode tool"
   :url "https://github.com/hyperledger/fabric-chaintool"
   :license {:name "Apache License"
