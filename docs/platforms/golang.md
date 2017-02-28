@@ -1,33 +1,43 @@
-# Hyperledger GO Language Chaincode Platform
-The Hyperledger framework provides support for chaincode written in the Go language. The Hyperledger validating peer provide a complete execution environment for Go programs. This README describes the Go platform-specific interface code that chaintool generates from the language neutral interface definitions and specifies the conventions applications written in Go must adhere to in order to execute in the Hyperledger Go environment. Basic familarity with the structure and function of chaintool as described in the top level README file is assumed.
+# Golang Chaincode Platform
+_Chaintool_ provides support for chaincode written in the [Go](https://golang.org/) language. This document describes the conventions of the chaintool Golang environment required for understanding and working with chaincode on this platform.  It is assumed that the reader is already familar with the general usage of chaintool as well as general Golang platform within Hyperledger Fabric.
+
+## Platform specifier
+Users enable the golang platform with the following configuration in chaincode.yaml:
+```
+Platform:
+        Name: org.hyperledger.chaincode.golang
+        Version: 1
+```
+
 ## Environment
 Any invocation of 'chaintool build*' will automatically synthesize the correct value for the $GOPATH environment variable based on the current value of the variable and the path of your chaincode project tree. Your chaincode project tree need _not_ be located within the directory hierarchy defined by the current value of $GOPATH. The 'chaintool build' command will ensures that the build correctly includes Go code from following paths (where $PROJECT_ROOT is the root directory of your application chaincode.)
-* $PROJECT_ROOT/build/deps
-  - Direct and transitive dependencies of your application as retrieved by _go get_.  (Please note: it is highly unlikely that production Hyperledger peers will use  _go get_ to resolve dependencies. This use of _go get_ is an artifact of ongoing Hyperledger development; reducing development friction as the platform dependencies are refined. Operationally all dependencies will be explicit.
-* $PROJECT_ROOT/build
-  - Root directory of the default location for compiler generated artifacts.
-* $PROJECT_ROOT
-  - Root directory for your application source files. Typically all application code is stored under $PROJECT_ROOT/src/chaincode.
-* current $GOPATH as set in the environment.
+
+- $PROJECT_ROOT/build/deps
+    - Direct and transitive dependencies of your application as retrieved by _go get_.  (Please note: it is highly unlikely that production Hyperledger peers will use  _go get_ to resolve dependencies. This use of _go get_ is an artifact of ongoing Hyperledger development; reducing development friction as the platform dependencies are refined. Operationally all dependencies will be explicit.
+- $PROJECT_ROOT/build
+    - Root directory of the default location for compiler generated artifacts.
+- $PROJECT_ROOT
+    - Root directory for your application source files. Typically all application code is stored under $PROJECT_ROOT/src/chaincode.
+- current $GOPATH as set in the environment.
 
 ## Chaincode Integration
 ### Entry-point
 Your chaincode entry-point _func main()_ should be placed in a file stored in a directory under $PROJECT_ROOT/src/chaincode/. The function should be part of a package called "chaincode". Other packages may be placed in files stored in other locations in the $PROJECT_ROOT directory hierarchy and may be imported by your entry-point module using standard golang mechanisms. (The typical Go convention is to place source files in directories rooted at $PROJECT_ROOT/src). Any Go files that are stored under $PROJECT_ROOT/src will be included in the final CAR package.
+
 ### Imports
 In addition to any packages imported as part of your application logic your chaincode will import packages from four other locations.
+
 * hyperledger/ccs  - "chaincode support"
-  - generated "stub" code produced by the chaintool compiler
-
+    - generated "stub" code produced by the chaintool compiler
 * hyperledger/cci/... - "chaincode interface"
-  - Go code which implements the interfaces defined in the application's .cci files including the required appinit.cci. The functions are placed in a package the name of which is generated from the name of the .cci file. The path to these files is likewise generated from the name of the .cci file. For example code generated from a file named "com.foo.bar.cci" is placed in the package "bar" under the path $PROJECT_ROOT/src/hyperledger/cci/com/foo/bar
-
+    - Go code which implements the interfaces defined in the application's .cci files including the required appinit.cci. The functions are placed in a package the name of which is generated from the name of the .cci file. The path to these files is likewise generated from the name of the .cci file. For example code generated from a file named "com.foo.bar.cci" is placed in the package "bar" under the path $PROJECT_ROOT/src/hyperledger/cci/com/foo/bar
 * github.com/golang/protobuf/proto - google protocol buffer support
-  - Go implementation of Google Protocol Buffers. Protocol Buffers are used by the chaintool generated code to encode messages used by chaincode.
-
+    - Go implementation of Google Protocol Buffers. Protocol Buffers are used by the chaintool generated code to encode messages used by chaincode.
 * github.com/hyperledger/fabric/core/chaincode/shim - generic Hyperledger chaincode support
-  - Common Go language support for required chaincode operations.
+    - Common Go language support for required chaincode operations.
 
 Here's the import section required for the 'example02' sample chaincode. This application includes "org.hyperledger.chaincode.example02.cci" and "project.cci" located in $PROJECT_ROOT/src/interfaces/.
+
 ```
 import (
 	"hyperledger/ccs"
@@ -38,6 +48,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 ```
+
 ### Hooks and Registration
 Each chaincode application must call ccs.Start() to register itself as chaincode with the peer. The ccs.Start() function takes a map of interface names to interface implementations expressed as pointers compatible with the CCInterface specification. This interface is generated by the compiler and placed within the interface specific stub (e.g. $PROJECT_ROOT/build/src/hyperledger/cci/appinit/server-stub.go) . It is the application programmer's responsibility to provide an implementation for each interface declared as provided in the chaincode.yaml, plus the implicit appinit.cci.
 
@@ -65,6 +76,7 @@ func main() {
 ```
 
 ### Callbacks
+
 For each interface declared in the _provided_ section of the application configuration the application programmer must provide implementations for all the functions specified in the respective _transactions_ or _queries_ declarations.  There is generally a 1:1 mapping between the CCI declaration and the required function signature in your code.  For instance, the following CCI declaration:
 ```
 queries {
@@ -76,8 +88,11 @@ requires a function signature that looks like:
 func (t *ChaincodeExample) CheckBalance(stub shim.ChaincodeStubInterface, param *example02.Entity) (*example02.BalanceResult, error) {}
 ```
 Every callback requires a shim.ChaincodeStubInterface as its first parameter, followed by an input parameter and return parameter as declared in the interface definition.  Functions that return _void_ simply return a single _error_ rather than _(type, error)_.
+
 ## Generated Code File Structure
+
 ### Overview
+
 All generated code is placed in directories rooted at $PROJECT_ROOT/build which, as mentioned earlier, is implicitly included in the $GOPATH. Interfaces are emitted to $PROJECT_ROOT/build/src/hyperledger/cci/..., and general chaincode support stubs are emitted to $PROJECT_ROOT/build/src/hyperledger/ccs.
 ```
 build/src/
@@ -107,9 +122,9 @@ build/src/
 ```
 ### Interfaces
 The chaintool compiler generates up to four artifact types per declared interface:
+
 * interface.proto - The google protobuf definition derived from the corresponding .cci definition.
 * interface.pb.go - The compiled protobuf definition, as emitted by _protoc --go_out_.
 * server-stub.go - The server-side stub for a provided interface.
 * client-stub.go - The client-side stub for a consumed interface.
 
-### Stubs

@@ -1,0 +1,31 @@
+site_name: Hyperledger Fabric Chaintool
+site_url: http://fabric-chaintool.readthedocs.io
+theme: readthedocs
+repo_url: https://github.com/hyperledger/fabric-chaintool.git
+site_description: 'Welcome to the Hyperledger fabric chaintool documentation'
+strict: true
+
+pages:
+- Introduction: index.md
+- Getting Started: getting-started.md
+- Interface Definition Language: interface.md
+- Command Reference: command-reference.md
+- Application Development: application-development.md
+- Client Development: client-development.md
+- Chaincode Platforms:
+    - org.hyperledger.chaincode.golang: platforms/golang.md
+    - org.hyperledger.chaincode.system: platforms/system.md
+- Metadata: metadata.md
+
+markdown_extensions:
+  - toc:
+     permalink: true
+  - admonition
+  - extra
+  - tables
+  - toc
+  - fenced_code
+  - smarty
+  - footnotes
+
+copyright: <br></br>Contributed to the Hyperledger Project under the <a href="https://github.com/hyperledger/fabric/blob/master/LICENSE" target="_blank">Apache Software License 2.0</a>
