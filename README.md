@@ -9,7 +9,7 @@ Please visit our [online documentation](http://fabric-chaintool.readthedocs.io/e
 ## Contributing
 
 We welcome contributions to the Hyperledger Project in many forms. There’s always plenty to do!
-Full details of how to contribute to this project are documented [here](http://hyperledger-fabric.readthedocs.io/en/latest/CONTRIBUTING/).
+Check [the documentation on how to contribute to this project](http://hyperledger-fabric.readthedocs.io/en/latest/CONTRIBUTING.html) for the full details.
 
 ## Community
 
