@@ -9,28 +9,35 @@ var init = builder.build("appinit");
 pb.loadProtoFile("./protos/org.hyperledger.chaincode.example02.proto", builder);
 var app = builder.build("org.hyperledger.chaincode.example02");
 
+var path = require('path');
+var ReadYaml = require('read-yaml');
+
 var hfc = require('fabric-client');
 var hfcutils = require('fabric-client/lib/utils.js');
 var utils = require('./lib/util.js');
 var Peer = require('fabric-client/lib/Peer.js');
 var Orderer = require('fabric-client/lib/Orderer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
-var CA = require('fabric-ca-client');
 var User = require('fabric-client/lib/User.js');
 
+var client;
 var chain;
-var peer;
+var peers = [];
 var eventhub;
+
+var chainId = 'mychannel';
+
+var config = ReadYaml.sync('client.config');
 
 function createBaseRequest(user) {
     var nonce = hfcutils.getNonce();
-    var tx_id = chain.buildTransactionID(nonce, user);
+    var tx_id = hfc.buildTransactionID(nonce, user);
 
     // send proposal to endorser
     var request = {
         chaincodeType: 'car',
-        targets: [peer],
-        chainId: 'testchainid',
+        targets: peers,
+        chainId: chainId,
         chaincodeId: 'mycc',
         txId: tx_id,
         nonce: nonce
@@ -49,24 +56,51 @@ function createRequest(user, fcn, args) {
 }
 
 function connect() {
-    var client = new hfc();
-    chain = client.newChain('chaintool-demo');
-
-    eventhub = new EventHub();
-    eventhub.setPeerAddr('grpc://localhost:7053');
-    eventhub.connect();
-
-    peer = new Peer('grpc://localhost:7051');
-    var orderer = new Orderer('grpc://localhost:7050');
-
-    chain.addOrderer(orderer);
-    chain.addPeer(peer);
+    client = new hfc();
 
     return utils.setStateStore(client, ".hfc-kvstore")
         .then(() => {
-            var ca = new CA('http://localhost:7054');
+            chain = client.newChain(chainId);
 
-            return utils.getUser(client, ca, 'admin', 'adminpw');
+            chain.addOrderer(client.newOrderer(config.orderer.url, {
+                pem: config.orderer.ca,
+                'ssl-target-name-override': config.orderer.hostname
+            }));
+
+            for (var i in config.peers) {
+                var p = config.peers[i]
+                peer = client.newPeer(p.api, {
+                    pem: config.ca.certificate,
+                    'ssl-target-name-override': p.hostname,
+                    'request-timeout': 120000
+                });
+                peers.push(peer);
+                chain.addPeer(peer);
+            }
+
+            var userSpec = {
+                username: config.identity.principal,
+                mspid: config.identity.mspid,
+                cryptoContent: {
+                    privateKeyPEM: config.identity.privatekey,
+                    signedCertPEM: config.identity.certificate
+                }};
+            return client.createUser(userSpec);
+        })
+        .then((user) => {
+            var peer1 = config.peers[0]
+            eventhub = new EventHub(client);
+            eventhub.setPeerAddr(peer1.events, {
+                pem: config.ca.certificate,
+                'ssl-target-name-override': peer1.hostname
+            });
+            eventhub.connect();
+
+            return chain.initialize()
+                .then(() => {
+
+                    return user;
+                });
         });
 }
 
@@ -90,7 +124,7 @@ function sendInstall(user, path, version) {
     request.chaincodeVersion = "1";
 
     // send proposal to endorser
-    return chain.sendInstallProposal(request);
+    return client.installChaincode(request);
 }
 
 function sendInstantiate(user, args) {
@@ -101,7 +135,7 @@ function sendInstantiate(user, args) {
     // send proposal to endorser
     return chain.sendInstantiateProposal(request)
         .then((response) => {
-            return utils.processResponse(chain, eventhub, request, response, 60000);
+            return utils.processResponse(chain, eventhub, request, response, 120000);
         });
 }
 

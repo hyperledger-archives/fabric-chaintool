@@ -59,22 +59,21 @@ module.exports = {
         });
     },
 
-    getUser: (client, cop, username, password) => {
-        return client.getUserContext(username)
+    getUser: (client, cop, mspid, username, password) => {
+        return client.getUserContext(username, true)
             .then((user) => {
                 if (user && user.isEnrolled()) {
                     return Promise.resolve(user);
                 } else {
                     // need to enroll it with COP server
-                    console.log("enrolling");
                     return cop.enroll({
                         enrollmentID: username,
                         enrollmentSecret: password
                     }).then((enrollment) => {
-                        console.log("enrollment");
                         var member = new User(username, client);
                         return member.setEnrollment(enrollment.key,
-                                                    enrollment.certificate)
+                                                    enrollment.certificate,
+                                                    mspid)
                             .then(() => {
                                 return client.setUserContext(member);
                             });
