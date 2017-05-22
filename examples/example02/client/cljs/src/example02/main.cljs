@@ -1,44 +1,55 @@
+;;-----------------------------------------------------------------------------
+;; Copyright 2017 Greg Haskins
+;;
+;; SPDX-License-Identifier: Apache-2.0
+;;-----------------------------------------------------------------------------
 (ns example02.main
   (:require [clojure.string :as string]
             [cljs.nodejs :as nodejs]
             [cljs.tools.cli :refer [parse-opts]]
-            [example02.core :as core]
+            [example02.connection :as conn]
+            [example02.api :as api]
             [promesa.core :as p :include-macros true]))
 
 (nodejs/enable-util-print!)
 
+(def fs (nodejs/require "fs"))
+(def pathlib (nodejs/require "path"))
+(def readyaml (nodejs/require "read-yaml"))
+
 (def _commands
-  [["deploy"
-    {:fn core/deploy
-     :default-args #js {:partyA #js {:entity "foo"
+  [["install"
+    {:fn api/install}]
+   ["instantiate"
+    {:fn api/instantiate
+     :default-args #js {:partyA #js {:entity "A"
                                      :value 100}
-                        :partyB #js {:entity "bar"
-                                     :value 100}}}]
+                        :partyB #js {:entity "B"
+                                     :value 200}}}]
    ["make-payment"
-    {:fn core/make-payment
-     :default-args #js {:partySrc "foo"
-                        :partyDst "bar"
+    {:fn api/make-payment
+     :default-args #js {:partySrc "A"
+                        :partyDst "B"
                         :amount 10}}]
    ["delete-account"
-    {:fn core/delete-account
-     :default-args #js {:id "foo"}}]
+    {:fn api/delete-account
+     :default-args #js {:id "A"}}]
    ["check-balance"
-    {:fn core/check-balance
-     :default-args #js {:id "foo"}}]])
+    {:fn api/check-balance
+     :default-args #js {:id "A"}}]])
 
 (def commands (into {} _commands))
 (defn print-commands [] (->> commands keys vec print-str))
 
 (def options
-  [[nil "--peer URL" "Peer URL"
-    :default "grpc://localhost:30303"]
-   [nil "--membersrvc URL" "Member services URL"
-    :default "grpc://localhost:50051"]
-   [nil "--username USER" "Username"
-    :default "test_user0"]
-   [nil "--password PASS" "Password"
-    :default "MS9qrN8hFjlE"]
-   ["-i" "--id ID" "ChaincodeID as a path/url/name"]
+  [[nil "--config CONFIG" "path/to/client.config"]
+   ["-p" "--path ID" "path/to/chaincode.car ('install' only)"]
+   ["-i" "--id ID" "ChaincodeID"
+    :default "mycc"]
+   ["-v" "--version VERSION" "Chaincode version"
+    :default "1"]
+   [nil "--channel ID" "Channel ID"
+    :default "mychannel"]
    ["-c" "--command CMD" (str "One of " (print-commands))
     :default "check-balance"
     :validate [#(contains? commands %) (str "Supported commands: " (print-commands))]]
@@ -59,9 +70,18 @@
                options-summary
                ""]))
 
+(defn- exist? [path]
+  (try
+    (.statSync fs path)
+    (catch js/Object e
+      nil)))
+
 (defn -main [& args]
+  ;; Initialize the protobuf layer, etc
+  (api/init (.resolve pathlib js/__dirname ".." "protos"))
+
   (let [{:keys [options arguments errors summary]} (parse-opts args options)
-        {:keys [id command args]} options]
+        {:keys [config command args]} options]
     (cond
 
       (:help options)
@@ -70,18 +90,30 @@
       (not= errors nil)
       (exit -1 "Error: " (string/join errors))
 
-      (nil? id)
-      (exit -1 "Error: Must specify a chaincodeID")
+      (nil? config)
+      (exit -1 "Error: --config required (see --help)")
+
+      (not (exist? config))
+      (exit -1 (str "Error: config \"" config "\" not found"))
 
       :else
       (let [desc (commands command)
-            _args (if (nil? args) (:default-args desc) (.parse js/JSON args))]
+            _args (if (empty? arguments)
+                    (:default-args desc)
+                    (->> arguments first (.parse js/JSON)))
+            _config (-> (.sync readyaml config)
+                        (js->clj :keywordize-keys true))]
 
-        (p/alet [{:keys [chain user]} (p/await (core/connect options))]
+        (p/alet [context (p/await (conn/connect! (assoc options :config _config)))
+                 params (-> options
+                            (assoc :args _args)
+                            (merge context))]
 
                 (println (str "Running " command "(" (.stringify js/JSON _args) ")"))
 
                 ;; Run the subcommand funtion
-                ((:fn desc) (assoc options :id id :args _args :chain chain :user user)))))))
+                (-> ((:fn desc) params)
+                    (p/catch #(println "Error:" %))
+                    (p/then #(conn/disconnect! context))))))))
 
 (set! *main-cli-fn* -main)

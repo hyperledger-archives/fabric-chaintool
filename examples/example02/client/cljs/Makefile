@@ -3,16 +3,12 @@ LEIN = $(shell which lein || echo ../../../../lein)
 
 all: client
 
-client: ./out/example02.js
+client: ./target/nodecljs/main.js
 
-node_modules: project.clj
-	$(LEIN) npm install
-
-./out/example02.js: $(SRCS) node_modules Makefile
-	$(LEIN) cljsbuild once
+./target/nodecljs/main.js: $(SRCS) Makefile
+	$(LEIN) nodecompile
 	@echo "Compilation complete: use \"node $@ --help\" for execution instructions"
 
 clean:
-	-@rm -rf ./out ||:
 	-@rm -rf ./target ||:
-	-@rm -rf node_modules ||:
+	-@rm -rf ./node_modules ||:
