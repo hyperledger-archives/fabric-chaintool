@@ -44,3 +44,6 @@ functions {
 This means that clients may optionally interact with this CCI using the same protocol discussed above to learn further details about the running application.  This includes obtaining the CCI specifications of the application which may be consumed in other projects.  Alternatively, users may simply use the _chaintool inspect_ command to obtain the desired information.
 
 
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+s

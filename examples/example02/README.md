@@ -177,3 +177,6 @@ Now lets transfer 10 tokens from a to b.
 $ node ./out/example02.js -n  a9114....946e83a95b --port 5000 -c make-payment --args '{ "partySrc": "a", "partyDst": "b", "amount": 10}'
 ```
 You should be able to repeat the query in Step 5 and confirm that a now holds 90 tokens while b holds 110.
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+s
