@@ -3,8 +3,10 @@
 # chaincode invoker
 # -----------------------------------------------------------------------
 #
-# Copyright (C) 2016 - Hyperledger
-# All rights reserved
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
 #
 # This example demonstrates chaincode to chaincode invoke.  This example
 # consumes the services of our example02 chaincode
@@ -20,7 +22,3 @@ Platform:
 
 Provides: [org.hyperledger.chaincode.example02]
 Consumes: [org.hyperledger.chaincode.example02]
-
-
-
-

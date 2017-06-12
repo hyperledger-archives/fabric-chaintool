@@ -3,8 +3,9 @@
 # chaincode example02
 # ----------------------------------
 #
-# Copyright (C) 2016 - Hyperledger
-# All rights reserved
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
 #
 
 Schema:  1

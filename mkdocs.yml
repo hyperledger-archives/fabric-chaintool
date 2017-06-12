@@ -1,3 +1,9 @@
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 site_name: Hyperledger Fabric Chaintool
 site_url: http://fabric-chaintool.readthedocs.io
 theme: readthedocs

@@ -1,3 +1,9 @@
+;;
+;; Copyright Greg Haskins All Rights Reserved
+;;
+;; SPDX-License-Identifier: Apache-2.0
+;;
+
 (defproject chaintool "1.0.0-alpha3-SNAPSHOT"
   :description "Hyperledger Fabric chaincode tool"
   :url "https://github.com/hyperledger/fabric-chaintool"
