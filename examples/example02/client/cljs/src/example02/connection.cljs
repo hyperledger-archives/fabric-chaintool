@@ -5,7 +5,7 @@
 ;;-----------------------------------------------------------------------------
 (ns example02.connection
   (:require [fabric-sdk.core :as fabric]
-            [fabric-sdk.chain :as fabric.chain]
+            [fabric-sdk.channel :as fabric.channel]
             [fabric-sdk.eventhub :as fabric.eventhub]
             [fabric-sdk.user :as fabric.user]
             [promesa.core :as p :include-macros true]))
@@ -22,18 +22,18 @@
 
     (fabric/create-user client config)))
 
-(defn- connect-orderer [client chain config]
+(defn- connect-orderer [client channel config]
   (let [{:keys [ca hostname url]} (:orderer config)
         orderer (fabric/new-orderer client
                                     url
                                     #js {:pem ca
                                          :ssl-target-name-override hostname})]
 
-    (fabric.chain/add-orderer chain orderer)
+    (fabric.channel/add-orderer channel orderer)
 
     orderer))
 
-(defn- connect-peer [client chain config peercfg]
+(defn- connect-peer [client channel config peercfg]
   (let [ca (-> config :ca :certificate)
         {:keys [api hostname]} peercfg
         peer (fabric/new-peer client
@@ -42,14 +42,14 @@
                                    :ssl-target-name-override hostname
                                    :request-timeout 120000})]
 
-    (fabric.chain/add-peer chain peer)
+    (fabric.channel/add-peer channel peer)
 
     peer))
 
-(defn- connect-eventhub [client chain config]
+(defn- connect-eventhub [client channel config]
   (let [ca (-> config :ca :certificate)
         {:keys [events hostname]} (-> config :peers first)
-        eventhub (fabric.eventhub/new client)]
+        eventhub (fabric/new-eventhub client)]
 
     (fabric.eventhub/set-peer-addr eventhub
                                    events
@@ -59,7 +59,7 @@
 
     eventhub))
 
-(defn connect! [{:keys [config id channel] :as options}]
+(defn connect! [{:keys [config id channelId] :as options}]
 
   (let [client (fabric/new-client)
         identity (:identity config)]
@@ -68,17 +68,17 @@
         (p/then #(create-user client identity))
         (p/then (fn [user]
 
-                  (let [chain (fabric.chain/new client channel)
-                        orderer (connect-orderer client chain config)
+                  (let [channel (fabric.channel/new client channelId)
+                        orderer (connect-orderer client channel config)
                         peers (->> config
                                    :peers
-                                   (map #(connect-peer client chain config %)))
-                        eventhub (connect-eventhub client chain config)]
+                                   (map #(connect-peer client channel config %)))
+                        eventhub (connect-eventhub client channel config)]
 
-                    (-> (fabric.chain/initialize chain)
+                    (-> (fabric.channel/initialize channel)
                         (p/then (fn []
                                   {:client client
-                                   :chain chain
+                                   :channel channel
                                    :orderer orderer
                                    :peers peers
                                    :eventhub eventhub

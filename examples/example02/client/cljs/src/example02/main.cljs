@@ -44,11 +44,11 @@
 (def options
   [[nil "--config CONFIG" "path/to/client.config"]
    ["-p" "--path ID" "path/to/chaincode.car ('install' only)"]
-   ["-i" "--id ID" "ChaincodeID"
+   ["-i" "--chaincodeId ID" "ChaincodeID"
     :default "mycc"]
    ["-v" "--version VERSION" "Chaincode version"
     :default "1"]
-   [nil "--channel ID" "Channel ID"
+   [nil "--channelId ID" "Channel ID"
     :default "mychannel"]
    ["-c" "--command CMD" (str "One of " (print-commands))
     :default "check-balance"

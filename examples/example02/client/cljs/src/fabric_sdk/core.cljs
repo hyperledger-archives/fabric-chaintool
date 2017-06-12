@@ -9,7 +9,6 @@
             [promesa.core :as p :include-macros true]))
 
 (def hfc (nodejs/require "fabric-client"))
-(def utils (nodejs/require "fabric-client/lib/utils.js"))
 
 (defn new-client []
   (new hfc))
@@ -38,8 +37,10 @@
 (defn new-peer [client url opts]
   (.newPeer client url opts))
 
-(defn build-txnid [nonce user]
-  (.buildTransactionID hfc nonce user))
+(defn new-eventhub [client]
+  (.newEventHub client))
 
-(defn get-nonce []
-  (.getNonce utils))
+(defn new-txnid [client]
+  (.newTransactionID client))
+
+

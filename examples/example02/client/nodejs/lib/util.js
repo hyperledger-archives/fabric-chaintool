@@ -10,8 +10,8 @@ function registerTxEvent(eventhub, txid, tmo) {
             reject("Timeout!");
         }, tmo);
 
-        eventhub.registerTxEvent(txid, (tx) => {
-            resolve();
+        eventhub.registerTxEvent(txid, (tx, code) => {
+            resolve(code);
             eventhub.unregisterTxEvent(txid);
             clearTimeout(handle);
         });
@@ -84,7 +84,7 @@ module.exports = {
 
     processResponse: (chain, eventhub, request, response, tmo) => {
         return Promise.all(
-            [registerTxEvent(eventhub, request.txId.toString(), tmo),
+            [registerTxEvent(eventhub, request.txId.getTransactionID(), tmo),
              sendTransaction(chain, response)]);
     }
 };

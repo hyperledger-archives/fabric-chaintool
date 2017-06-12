@@ -25,29 +25,27 @@ var chain;
 var peers = [];
 var eventhub;
 
-var chainId = 'mychannel';
+var channelId = 'mychannel';
 
 var config = ReadYaml.sync('client.config');
 
-function createBaseRequest(user) {
-    var nonce = hfcutils.getNonce();
-    var tx_id = hfc.buildTransactionID(nonce, user);
+function createBaseRequest() {
+    var tx_id = client.newTransactionID();
 
     // send proposal to endorser
     var request = {
         chaincodeType: 'car',
         targets: peers,
-        chainId: chainId,
+        chainId: channelId,
         chaincodeId: 'mycc',
-        txId: tx_id,
-        nonce: nonce
+        txId: tx_id
     };
 
     return request;
 }
 
-function createRequest(user, fcn, args) {
-    var request = createBaseRequest(user);
+function createRequest(fcn, args) {
+    var request = createBaseRequest();
 
     request.fcn = fcn;
     request.args = [args.toBuffer()];
@@ -60,7 +58,7 @@ function connect() {
 
     return utils.setStateStore(client, ".hfc-kvstore")
         .then(() => {
-            chain = client.newChain(chainId);
+            chain = client.newChannel(channelId);
 
             chain.addOrderer(client.newOrderer(config.orderer.url, {
                 pem: config.orderer.ca,
@@ -89,7 +87,7 @@ function connect() {
         })
         .then((user) => {
             var peer1 = config.peers[0]
-            eventhub = new EventHub(client);
+            eventhub = client.newEventHub();
             eventhub.setPeerAddr(peer1.events, {
                 pem: config.ca.certificate,
                 'ssl-target-name-override': peer1.hostname
@@ -111,9 +109,9 @@ function disconnect() {
     });
 }
 
-function sendInstall(user, path, version) {
+function sendInstall(path, version) {
 
-    var request = createBaseRequest(user);
+    var request = createBaseRequest();
     if (path) {
         request.chaincodePath = path;
     } else {
@@ -127,9 +125,9 @@ function sendInstall(user, path, version) {
     return client.installChaincode(request);
 }
 
-function sendInstantiate(user, args) {
+function sendInstantiate(args) {
 
-    var request = createRequest(user, 'init', new init.Init(args));
+    var request = createRequest('init', new init.Init(args));
     request.chaincodeVersion = "1";
 
     // send proposal to endorser
@@ -139,9 +137,9 @@ function sendInstantiate(user, args) {
         });
 }
 
-function sendTransaction(user, fcn, args) {
+function sendTransaction(fcn, args) {
 
-    var request = createRequest(user, fcn, args);
+    var request = createRequest(fcn, args);
 
     return chain.sendTransactionProposal(request)
         .then((response) => {
@@ -149,20 +147,18 @@ function sendTransaction(user, fcn, args) {
         });
 }
 
-function sendQuery(user, fcn, args) {
-    var request = createRequest(user, fcn, args);
+function sendQuery(fcn, args) {
+    var request = createRequest(fcn, args);
     return chain.queryByChaincode(request);
 }
 
-function makePayment(user, args) {
-    return sendTransaction(user,
-                           'org.hyperledger.chaincode.example02/fcn/1',
+function makePayment(args) {
+    return sendTransaction('org.hyperledger.chaincode.example02/fcn/1',
                            new app.PaymentParams(args));
 }
 
-function checkBalance(user, args) {
-    return sendQuery(user,
-                     'org.hyperledger.chaincode.example02/fcn/3',
+function checkBalance(args) {
+    return sendQuery('org.hyperledger.chaincode.example02/fcn/3',
                      new app.Entity(args))
         .then((results) => {
             return app.BalanceResult.decode(results[0]);
@@ -178,8 +174,8 @@ program
     .option("-v, --version <version>", "Version of chaincode to install")
     .action((options) => {
         return connect()
-            .then((user) => {
-                return sendInstall(user, options.path, options.version);
+            .then(() => {
+                return sendInstall(options.path, options.version);
             })
             .then(() => {
                 return disconnect();
@@ -193,9 +189,8 @@ program
     .command('instantiate')
     .action(() => {
         return connect()
-            .then((user) => {
-                return sendInstantiate(user,
-                                       {
+            .then(() => {
+                return sendInstantiate({
                                            'partyA': {'entity':'A', 'value':100},
                                            'partyB': {'entity':'B', 'value':200}
                                        });
@@ -212,9 +207,8 @@ program
     .command('makepayment <partySrc> <partyDst> <amount>')
     .action((partySrc, partyDst, amount) => {
         return connect()
-            .then((user) => {
-                return makePayment(user,
-                                   {
+            .then(() => {
+                return makePayment({
                                        'partySrc': partySrc,
                                        'partyDst': partyDst,
                                        'amount':   parseInt(amount)
@@ -232,8 +226,8 @@ program
     .command('checkbalance <id>')
     .action((id) => {
         return connect()
-            .then((user) => {
-                return checkBalance(user, {'id':id});
+            .then(() => {
+                return checkBalance({'id':id});
             })
             .then((result) => {
                 console.log("balance:" + result.balance);

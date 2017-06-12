@@ -9,7 +9,7 @@
   :npm {:dependencies [[source-map-support "0.4.15"]
                        [protobufjs "5.0.1"]
                        [read-yaml "1.1.0"]
-                       [fabric-client "1.0.0-alpha2"]]}
+                       [fabric-client "1.0.0-beta"]]}
   :source-paths ["src" "target/classes"]
   :clean-targets ["out" "release"]
   :target-path "target"
