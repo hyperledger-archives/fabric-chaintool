@@ -1,3 +1,9 @@
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#
+
 Gregory Haskins <ghaskins@lseg.com>
 Eric Baur <ebaur@lseg.com>
 Muralidharan Srinivasan <muralisr@us.ibm.com>

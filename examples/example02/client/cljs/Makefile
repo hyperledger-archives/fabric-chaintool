@@ -1,3 +1,9 @@
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 SRCS = $(shell find src -type f)
 LEIN = $(shell which lein || echo ../../../../lein)
 

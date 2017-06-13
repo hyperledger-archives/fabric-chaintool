@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 
 # Ensure this file is executable via `chmod a+x lein`, then place it
 # somewhere on your $PATH, like ~/bin. The rest of Leiningen will be

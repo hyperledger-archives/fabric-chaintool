@@ -1,3 +1,9 @@
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 NAME=chaintool
 LEIN = $(shell which lein || echo ./lein)
 BINDIR ?= /usr/local/bin

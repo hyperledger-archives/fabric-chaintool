@@ -1,3 +1,9 @@
+;;-----------------------------------------------------------------------------
+;; Copyright 2017 Greg Haskins
+;;
+;; SPDX-License-Identifier: Apache-2.0
+;;-----------------------------------------------------------------------------
+
 (defproject example02 "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"

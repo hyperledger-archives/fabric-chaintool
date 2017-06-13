@@ -1,4 +1,9 @@
 
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 message InterfaceDescriptor {
         string name = 1;
         bytes  data = 2;
