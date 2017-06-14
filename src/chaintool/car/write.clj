@@ -24,22 +24,6 @@
            (org.apache.commons.io.output ByteArrayOutputStream))
   (:refer-clojure :exclude [import]))
 
-(defn findfiles [path]
-  (->> path file-seq (filter #(.isFile %))))
-
-;;--------------------------------------------------------------------------------------
-;; convertfile - takes a basepath (string) and file (handle) and returns a tuple containing
-;; {handle path}
-;;
-;; handle: the raw io/file handle as passed in via 'file'
-;; path: the relative path of the file w.r.t. the root of the archive
-;;--------------------------------------------------------------------------------------
-(defn convertfile [basepath file]
-  (let [basepathlen (->> basepath io/file .getAbsolutePath count inc)
-        fqpath (.getAbsolutePath file)
-        path (subs fqpath basepathlen)]
-    {:handle file :path path}))
-
 ;;--------------------------------------------------------------------------------------
 ;; import - takes a file handle and returns a tuple containing [sha1 size data]
 ;;
@@ -56,23 +40,6 @@
     [sha size (.toByteArray os)]))
 
 ;;--------------------------------------------------------------------------------------
-;; buildfiles - takes a basepath string, and a vector of spec strings, and builds
-;; a sorted list of {:handle :path} structures.
-;;
-;; Spec entires can be either an explicit file or a directory, both of which are
-;; implicitly relative to basepath.  E.g. ["/path/to/foo" ["bar" "baz.conf"]]
-;; would import ("/path/to/foo/bar" "/path/to/foo/baz.conf").  If any spec is a
-;; directory it will be recursively expanded.
-;;
-;; The resulting structure will consist of an io/file under :handle, and a :path
-;; with the basepath removed, sorted by :path (for determinisim)
-;;--------------------------------------------------------------------------------------
-(defn buildfiles [basepath spec]
-  (let [handles (flatten (map #(findfiles (io/file basepath %)) spec))
-        descriptors (map #(convertfile basepath %) handles)]
-    (sort-by :path descriptors)))
-
-;;--------------------------------------------------------------------------------------
 ;; buildentry - builds a protobuf "Entry" object based on the tuple as emitted by (convertfile)
 ;;--------------------------------------------------------------------------------------
 (defn buildentry [{:keys [path handle]} compressiontype]
@@ -81,12 +48,13 @@
 
 ;;--------------------------------------------------------------------------------------
 ;; buildentries - builds a list of protobuf "Entry" objects based on an input list
-;; of {handle path} tuples.  The output list will respect the input list order, and
-;; it is important that the input list be pre-sorted in a deterministic manner if
-;; the serialized output is expected to be deterministic as well.
+;; of {handle path} tuples.  The input file list is sorted by :path to ensure
+;; deterministic results
 ;;--------------------------------------------------------------------------------------
 (defn buildentries [files compressiontype]
-  (map #(buildentry % compressiontype) files))
+  (->> files
+       (sort-by :path)
+       (map #(buildentry % compressiontype))))
 
 ;;--------------------------------------------------------------------------------------
 ;; buildcompression - builds a protobuf "Compression" object based on the requested type
@@ -96,10 +64,9 @@
   (if (codecs/codec-types type)
     (fl/protobuf Compression :type (string/upper-case type) :description type)))
 
-(defn write [rootpath filespec compressiontype outputfile]
+(defn write [files compressiontype outputfile]
   (if-let [compression (buildcompression compressiontype)]
-    (let [files (buildfiles rootpath filespec)
-          header (fl/protobuf Header :magic (:magic CompatVersion) :version (:version CompatVersion))
+    (let [header (fl/protobuf Header :magic (:magic CompatVersion) :version (:version CompatVersion))
           entries (buildentries files compressiontype)
           payload (fl/protobuf Payload :compression compression :entries entries)
           archive (fl/protobuf Archive :payload (fl/protobuf-dump payload))]
