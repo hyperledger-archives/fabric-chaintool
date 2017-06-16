@@ -1,3 +1,10 @@
+/*
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+*/
 var program = require('commander');
 var pb = require("protobufjs");
 

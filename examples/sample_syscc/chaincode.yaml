@@ -3,8 +3,11 @@
 # chaincode example02
 # ----------------------------------
 #
-# Copyright (C) 2016 - Hyperledger
-# All rights reserved
+#
+# Copyright Greg Haskins All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 #
 
 Schema:  1
@@ -16,14 +19,3 @@ Platform:
         Version: 1
 
 Provides: [self] # 'self' is a keyword that means there should be $name.cci (e.g. org.hyperledger.chaincode.system.sample.cci)
-
-
-
-
-
-
-
-
-
-
-
