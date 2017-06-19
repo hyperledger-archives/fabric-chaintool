@@ -10,19 +10,19 @@ Platform:
 ```
 
 ## Environment
-Any invocation of 'chaintool build*' will automatically synthesize the correct value for the $GOPATH environment variable based on the current value of the variable and the path of your chaincode project tree. Your chaincode project tree need _not_ be located within the directory hierarchy defined by the current value of $GOPATH. The 'chaintool build' command will ensures that the build correctly includes Go code from following paths (where $PROJECT_ROOT is the root directory of your application chaincode.)
+Any invocation of 'chaintool build*' will automatically synthesize the correct value for the $GOPATH environment variable based on the current value of the variable and the path of your chaincode project tree. Your chaincode project tree need _not_ be located within the directory hierarchy defined by the current value of $GOPATH. The 'chaintool build' command will ensures that the build correctly includes Go code from following paths (where $CHAINCODE is the root directory of your application chaincode.)
 
-- $PROJECT_ROOT/build/deps
+- $CHAINCODE/build/deps
     - Direct and transitive dependencies of your application as retrieved by _go get_.  (Please note: it is highly unlikely that production Hyperledger peers will use  _go get_ to resolve dependencies. This use of _go get_ is an artifact of ongoing Hyperledger development; reducing development friction as the platform dependencies are refined. Operationally all dependencies will be explicit.
-- $PROJECT_ROOT/build
+- $CHAINCODE/build
     - Root directory of the default location for compiler generated artifacts.
-- $PROJECT_ROOT
-    - Root directory for your application source files. Typically all application code is stored under $PROJECT_ROOT/src/chaincode.
+- $CHAINCODE
+    - Root directory for your application source files. Typically all application code is stored under $CHAINCODE/src/chaincode.
 - current $GOPATH as set in the environment.
 
 ## Chaincode Integration
 ### Entry-point
-Your chaincode entry-point _func main()_ should be placed in a file stored in a directory under $PROJECT_ROOT/src/chaincode/. The function should be part of a package called "chaincode". Other packages may be placed in files stored in other locations in the $PROJECT_ROOT directory hierarchy and may be imported by your entry-point module using standard golang mechanisms. (The typical Go convention is to place source files in directories rooted at $PROJECT_ROOT/src). Any Go files that are stored under $PROJECT_ROOT/src will be included in the final CAR package.
+Your chaincode entry-point _func main()_ should be placed in a file stored in a directory under $CHAINCODE/src/chaincode/. The function should be part of a package called "chaincode". Other packages may be placed in files stored in other locations in the $CHAINCODE directory hierarchy and may be imported by your entry-point module using standard golang mechanisms. (The typical Go convention is to place source files in directories rooted at $CHAINCODE/src). Any Go files that are stored under $CHAINCODE/src will be included in the final CAR package.
 
 ### Imports
 In addition to any packages imported as part of your application logic your chaincode will import packages from four other locations.
@@ -30,13 +30,13 @@ In addition to any packages imported as part of your application logic your chai
 * hyperledger/ccs  - "chaincode support"
     - generated "stub" code produced by the chaintool compiler
 * hyperledger/cci/... - "chaincode interface"
-    - Go code which implements the interfaces defined in the application's .cci files including the required appinit.cci. The functions are placed in a package the name of which is generated from the name of the .cci file. The path to these files is likewise generated from the name of the .cci file. For example code generated from a file named "com.foo.bar.cci" is placed in the package "bar" under the path $PROJECT_ROOT/src/hyperledger/cci/com/foo/bar
+    - Go code which implements the interfaces defined in the application's .cci files including the required appinit.cci. The functions are placed in a package the name of which is generated from the name of the .cci file. The path to these files is likewise generated from the name of the .cci file. For example code generated from a file named "com.foo.bar.cci" is placed in the package "bar" under the path $CHAINCODE/src/hyperledger/cci/com/foo/bar
 * github.com/golang/protobuf/proto - google protocol buffer support
     - Go implementation of Google Protocol Buffers. Protocol Buffers are used by the chaintool generated code to encode messages used by chaincode.
 * github.com/hyperledger/fabric/core/chaincode/shim - generic Hyperledger chaincode support
     - Common Go language support for required chaincode operations.
 
-Here's the import section required for the 'example02' sample chaincode. This application includes "org.hyperledger.chaincode.example02.cci" and "project.cci" located in $PROJECT_ROOT/src/interfaces/.
+Here's the import section required for the 'example02' sample chaincode. This application includes "org.hyperledger.chaincode.example02.cci" and "project.cci" located in $CHAINCODE/src/interfaces/.
 
 ```
 import (
@@ -50,7 +50,7 @@ import (
 ```
 
 ### Hooks and Registration
-Each chaincode application must call ccs.Start() to register itself as chaincode with the peer. The ccs.Start() function takes a map of interface names to interface implementations expressed as pointers compatible with the CCInterface specification. This interface is generated by the compiler and placed within the interface specific stub (e.g. $PROJECT_ROOT/build/src/hyperledger/cci/appinit/server-stub.go) . It is the application programmer's responsibility to provide an implementation for each interface declared as provided in the chaincode.yaml, plus the implicit appinit.cci.
+Each chaincode application must call ccs.Start() to register itself as chaincode with the peer. The ccs.Start() function takes a map of interface names to interface implementations expressed as pointers compatible with the CCInterface specification. This interface is generated by the compiler and placed within the interface specific stub (e.g. $CHAINCODE/build/src/hyperledger/cci/appinit/server-stub.go) . It is the application programmer's responsibility to provide an implementation for each interface declared as provided in the chaincode.yaml, plus the implicit appinit.cci.
 
 It is idiomatic to create one implementation structure (e.g. "ChaincodeExample", as shown below) to handle all interfaces.  However, for special circumstances such as function-name collisions between interfaces, the caller may wish to dispatch certain interfaces to different handlers.
 ```
@@ -93,7 +93,7 @@ Every callback requires a shim.ChaincodeStubInterface as its first parameter, fo
 
 ### Overview
 
-All generated code is placed in directories rooted at $PROJECT_ROOT/build which, as mentioned earlier, is implicitly included in the $GOPATH. Interfaces are emitted to $PROJECT_ROOT/build/src/hyperledger/cci/..., and general chaincode support stubs are emitted to $PROJECT_ROOT/build/src/hyperledger/ccs.
+All generated code is placed in directories rooted at $CHAINCODE/build which, as mentioned earlier, is implicitly included in the $GOPATH. Interfaces are emitted to $CHAINCODE/build/src/hyperledger/cci/..., and general chaincode support stubs are emitted to $CHAINCODE/build/src/hyperledger/ccs.
 ```
 build/src/
 └── hyperledger
