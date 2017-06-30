@@ -28,7 +28,12 @@
 (deftype Entry       [^Definition message ^Definition enum ^Field field])
 (deftype Function    [^String key ^String rettype ^String name ^String param])
 
-(defn- typeconvert [[_ name]] name)
+(defn- typeconvert [[prefix name :as inType]]
+    (cond
+
+      (= prefix :map) (let [[_ keyType valueType] inType]
+                        (str "map" "<" (second  keyType) "," (-> valueType second second) ">"))
+      :else name))
 
 (defn- find-toplevel-definitions [ast]
   (loop [loc (->> ast zip/down zip/right) defs []]
@@ -66,7 +71,6 @@
 
 (declare build-message)
 (declare build-enum)
-
 (defn- build-subentry [ast]
   (let [type (->> ast zip/down zip/node)]
     (case type

@@ -58,6 +58,21 @@
   (is (= example1-expected-result (parse example1-cci)))
   (is (= example2-expected-result (parse example2-cci))))
 
+(def map-example-cci
+  "
+  message MapMessage {
+    map<string, string> testmap = 1;
+  }
+  "
+  )
+
+(def map-example-expected-result
+  [[:interface [:message "MapMessage" [:field [:type [:map [:keyType "string"] [:type [:scalar "string"]]]] [:fieldName "testmap"] [:index "1"]]]] nil])
+
+
+(deftest test-map-parser-output
+  (is (= map-example-expected-result (parse map-example-cci))))
+
 (def example-undefined-type-cci
   "
   message BadMessage {
