@@ -115,13 +115,6 @@
     true))
 
 ;;-----------------------------------------------------------------
-;; shimlib? - use a set as a predicate for detecting packages
-;; already included in the ccenv on the peer
-;;-----------------------------------------------------------------
-(def shimlib? #{"github.com/hyperledger/fabric/core/chaincode/shim"
-                "github.com/hyperledger/fabric/protos/peer"})
-
-;;-----------------------------------------------------------------
 ;; generated? - returns true if the package is generated code.  We
 ;; can elide these from the package since they will be regenerated
 ;; by the peer when chaintool builds the package.
@@ -166,7 +159,6 @@
   (->> (go-cmd {:path path :silent true} "list" "-f" (str "{{ join ." type " \"\\n\"}}") pkg)
        string/split-lines
        (remove syslib?)
-       (remove shimlib?)
        (remove generated?)))
 
 ;;-----------------------------------------------------------------
