@@ -94,6 +94,23 @@
     (is (= (->> result (ast/find :syntax) zip/down zip/right zip/node) "proto3"))
     (is (= (->> result (ast/find :enum) zip/down zip/right zip/right zip/node) [:enumField "ZERO" "0"]))))
 
+(def map-input
+  (zip/vector-zip
+   [:interface
+    [:message "MapMessage"
+     [:field
+      [:type
+       [:map
+        [:keyType "string"]
+        [:type [:scalar "string"]]]]
+      [:fieldName "testmap"] [:index "1"]]]]))
+
+(deftest map-test
+  (let [result (round-about map-input)]
+    (is (= (->> result zip/down zip/node) :proto ))
+    (is (= (->> result (ast/find :syntax) zip/down zip/right zip/node) "proto3")
+    (is (= (->> result (ast/find :map) zip/down zip/right  zip/node) [:keyType "string"])))))
+
 (def parameterless-function
   (zip/vector-zip
    [:interface [:functions [:function [:rettype "string"] [:functionName "Parameterless"] [:index "1"]]]]))

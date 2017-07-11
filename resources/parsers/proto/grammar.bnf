@@ -24,11 +24,15 @@ fieldOption ::= optionBody | "default" "=" constant
 
 modifier ::= "required" | "repeated"
 
-type ::= scalar / userType
+type ::= scalar / userType / map
 
 scalar ::= "double" | "float" | "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" | "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string" | "bytes"
 
 userType ::= ( "."? ident )+
+
+map = <"map"> <"<"> keyType <","> type <">">
+keyType = "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" |
+          "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string"
 
 constant ::= ident | intLit | floatLit | strLit | boolLit
 
