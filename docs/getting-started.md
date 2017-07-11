@@ -3,8 +3,10 @@
 ## Installation
 
 ### Prerequisites
-- Java JRE/JDK v1.8 (or higher)
-- Golang v1.7 or higher
+- [Java](https://www.java.com) JRE/JDK v1.8 (or higher)
+- [Golang](https://golang.org) v1.7 or higher
+- [Protobuf Compiler](https://developers.google.com/protocol-buffers/docs/downloads) v3.0 or higher
+- [protoc-gen-go](https://github.com/golang/protobuf/tree/master/protoc-gen-go)
 
 ### Install
 Download the latest [release](https://github.com/hyperledger/fabric-chaintool/releases) and install it in your $PATH
