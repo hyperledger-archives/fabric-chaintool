@@ -13,7 +13,7 @@ Download the latest [release](https://github.com/hyperledger/fabric-chaintool/re
 
 #### Example
 ```
-$ sudo (curl https://github.com/hyperledger/fabric-chaintool/releases/download/v0.10.3/chaintool -Lo /usr/local/bin/chaintool && chmod +x /usr/local/bin/chaintool)
+$ sudo curl https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/chaintool-1.0.0/hyperledger-fabric-chaintool-1.0.0.jar -Lo /usr/local/bin/chaintool && sudo chmod +x /usr/local/bin/chaintool
 ```
 
 ### Usage
@@ -21,7 +21,7 @@ Chaintool supports a number of "actions" (e.g. "chaintool build").  See _chainto
 
 ```
 $ chaintool -h
-chaintool version: v0.10.3
+chaintool version: v1.0.0
 
 Usage: chaintool [general-options] action [action-options]
 
