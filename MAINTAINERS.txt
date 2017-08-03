@@ -4,6 +4,6 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #
 
-Gregory Haskins <ghaskins@lseg.com>
-Eric Baur <ebaur@lseg.com>
+Greg Haskins <gregory.haskins@gmail.com>
+Eric Baur <ecb@robeybaur.org>
 Muralidharan Srinivasan <muralisr@us.ibm.com>
