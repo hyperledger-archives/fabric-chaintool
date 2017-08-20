@@ -147,6 +147,8 @@
 (defn- project-pkg? [path pkg]
   (let [prjsrc (-> (io/file path "src") .getCanonicalPath)
         pkgpath (find-package path "GOPATH" pkg)]
+    (when-not pkgpath
+      (util/abort -1 (str "golang package \"" pkg "\" referenced but not found")))
     (fs/child-of? prjsrc pkgpath)))
 
 ;;-----------------------------------------------------------------
