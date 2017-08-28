@@ -69,12 +69,18 @@
       (println "Compilation complete")))
 
   ;;-----------------------------------------------------------------
+  ;; deps - not supported for system chaincode
+  ;;-----------------------------------------------------------------
+  (deps [_ {:keys [path]}]
+    (util/abort -1 "unsupported platform operation: deps"))
+
+  ;;-----------------------------------------------------------------
   ;; clean - cleans up any artifacts from a previous build, if any
   ;;-----------------------------------------------------------------
   (clean [_ {:keys [path]}]
     (fileutils/recursive-delete (io/file path "build")))
 
-  ;;-----------------------------------------------------------------
+;;-----------------------------------------------------------------
   ;; package - not supported for system chaincode
   ;;-----------------------------------------------------------------
   (package [_ _]

@@ -235,6 +235,15 @@
          distinct)))
 
 ;;-----------------------------------------------------------------
+;; generate-code
+;;-----------------------------------------------------------------
+(defn- generate-code [path config builddir]
+  (generate {:base "hyperledger"
+             :ipath (io/file path "src/interfaces")
+             :opath (io/file builddir "src")
+             :config config}))
+
+;;-----------------------------------------------------------------
 ;;-----------------------------------------------------------------
 ;; GolangUserspacePlatform
 ;;-----------------------------------------------------------------
@@ -259,13 +268,7 @@
     (let [builddir (io/file path "build")]
 
       ;; run our code generator
-      (generate {:base "hyperledger"
-                 :ipath (io/file path "src/interfaces")
-                 :opath (io/file builddir "src")
-                 :config config})
-
-      ;; install go dependencies
-      (go-cmd {:path path} "get" "-d" "-v" "chaincode")
+      (generate-code path config builddir)
 
       ;; build the actual code
       (let [gobin (io/file builddir "bin")]
@@ -278,6 +281,18 @@
                 "chaincode"))
 
       (println "Compilation complete")))
+
+  ;;-----------------------------------------------------------------
+  ;; deps - download any missing dependencies
+  ;;-----------------------------------------------------------------
+  (deps [_ {:keys [path config]}]
+    (let [builddir (io/file path "build")]
+
+      ;; run our code generator
+      (generate-code path config builddir)
+
+      ;; install go dependencies
+      (go-cmd {:path path} "get" "-d" "-v" "chaincode")))
 
   ;;-----------------------------------------------------------------
   ;; clean - cleans up any artifacts from a previous build, if any

@@ -1,4 +1,4 @@
-;; Copyright London Stock Exchange Group 2016 All Rights Reserved.
+;; Copyright Greg Haskins, 2017 All Rights Reserved.
 ;;
 ;; Licensed under the Apache License, Version 2.0 (the "License");
 ;; you may not use this file except in compliance with the License.
@@ -11,17 +11,12 @@
 ;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
+(ns chaintool.subcommands.deps
+  (:require [chaintool.config.util :as config.util]
+            [chaintool.platforms.core :as platforms.core]
+            [chaintool.platforms.api :as platforms.api]))
 
-(ns chaintool.platforms.api)
-
-(defprotocol Platform
-  ;; Displays environment variables relevant to the build environment
-  (env [this params])
-  ;; Compiles the platform
-  (build [this params])
-  ;; Downloads any missing deps for the platform
-  (deps [this params])
-  ;; Cleans any previous builds of the platform
-  (clean [this params])
-  ;; Packages the chaincode project according to the platform
-  (package [this params]))
+(defn run [options args]
+  (let [[path config] (config.util/load-from-options options)]
+    (when-let [platform (platforms.core/find config)]
+      (platforms.api/deps platform {:path path :config config}))))

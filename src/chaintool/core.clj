@@ -15,6 +15,7 @@
 (ns chaintool.core
   (:require [chaintool.subcommands.build :as buildcmd]
             [chaintool.subcommands.buildcar :as buildcarcmd]
+            [chaintool.subcommands.deps :as depscmd]
             [chaintool.subcommands.clean :as cleancmd]
             [chaintool.subcommands.inspect :as inspectcmd]
             [chaintool.subcommands.ls :as lscmd]
@@ -55,6 +56,10 @@
     :validate (fn [options arguments] (= (count arguments) 1))
     :options (option-merge [["-o" "--output NAME" "path to the output destination"]]
                            common-options)}
+
+   {:name "deps" :desc "Download any missing dependencies for the project"
+    :handler depscmd/run
+    :options common-path-options}
 
    {:name "clean" :desc "Clean the chaincode project"
     :handler cleancmd/run
