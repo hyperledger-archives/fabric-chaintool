@@ -180,14 +180,14 @@
        (cons pkg)))
 
 ;;-----------------------------------------------------------------
-;; vendor-dependencies - given a list of pkgs that we depend on,
+;; bundle-dependencies - given a list of pkgs that we depend on,
 ;; resolve a list of source files vendored under our chaincode
 ;; package
 ;;-----------------------------------------------------------------
-(defn- vendor-dependencies [path pkgs]
+(defn- bundle-dependencies [path pkgs]
   (for [pkg pkgs]
     (let [pkgpath (find-package path "GOPATH" pkg)]
-      (println (str "INFO: Auto-vendoring package \"" pkg "\""))
+      (println (str "INFO: Including autodep package \"" pkg "\""))
 
       (let [files (->> (fs/list-dir pkgpath)
                        (filter fs/file?)
@@ -195,10 +195,10 @@
                        (remove golang-test?))]
 
         ;; files need to be converted to {:handle :path} tuples with
-        ;; the path remapped under src/chaincode/vendor/$pkg
+        ;; the path remapped under autodeps/src/$pkg
         (for [file files]
           (-> (convert-file pkgpath file)
-              (update :path #(-> (io/file "src" "chaincode" "vendor" pkg %)
+              (update :path #(-> (io/file "autodeps" "src" pkg %)
                                  io/as-relative-path))))))))
 
 ;;-----------------------------------------------------------------
@@ -320,7 +320,7 @@
                       flatten
                       distinct)
             files (->> (concat
-                        (vendor-dependencies path deps)
+                        (bundle-dependencies path deps)
                         (get-project-files path filespec))
                        flatten
                        (remove nil?))]

@@ -55,7 +55,7 @@
 ;; retrived by "go get")
 ;;------------------------------------------------------------------
 (defn buildgopath [path]
-  (->> [[path "build/deps"] [path "build"] [path] [(System/getenv "GOPATH")]]
+  (->> [[path "build/deps"] [path "build"] [path "autodeps"] [path] [(System/getenv "GOPATH")]]
        (filter #(not= % [nil]))
        (map #(.getCanonicalPath (apply io/file %)))
        (clojure.string/join ":")))
