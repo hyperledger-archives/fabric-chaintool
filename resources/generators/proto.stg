@@ -1,4 +1,3 @@
-
 emitfield(field) ::= "<field.modifier> <field.type> <field.name> = <field.index>;"
 
 emitmsg(msg) ::=
@@ -15,10 +14,18 @@ enum <enum.name> {
 }
 >>
 
+emitoneof(oneof) ::=
+<<
+oneof <oneof.name> {
+        <oneof.entries.values:{field |<emitfield(field)>}; separator="\n">
+}
+>>
+
 emitdef(def) ::=
 <<
 <if(def.message)><emitmsg(def.message)>
 <elseif(def.enum)><emitenum(def.enum)>
+<elseif(def.oneof)><emitoneof(def.oneof)>
 <else><emitfield(def.field)><endif>
 >>
 

@@ -15,7 +15,7 @@ enumField ::= enumName <"="> enumValue <";">
 
 optionBody ::= ident ( "." ident )* "=" constant
 
-<messageBody> ::= <"{"> ( field | enum | message )* <"}">
+<messageBody> ::= <"{"> ( field | enum | message | oneof )* <"}">
 
 field ::= modifier? type fieldName <"="> index ( <"["> fieldOption ( <","> fieldOption )* <"]"> )? <";">
 
@@ -24,7 +24,7 @@ fieldOption ::= optionBody | "default" "=" constant
 
 modifier ::= "required" | "repeated"
 
-type ::= scalar / userType / map
+type ::= scalar / userType / map / oneof
 
 scalar ::= "double" | "float" | "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" | "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string" | "bytes"
 
@@ -33,6 +33,8 @@ userType ::= ( "."? ident )+
 map = <"map"> <"<"> keyType <","> type <">">
 keyType = "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" |
           "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string"
+
+oneof ::= <"oneof"> ident <"{"> (field | <";">)* <"}">
 
 constant ::= ident | intLit | floatLit | strLit | boolLit
 

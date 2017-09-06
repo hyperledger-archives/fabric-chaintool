@@ -73,6 +73,25 @@
 (deftest test-map-parser-output
   (is (= map-example-expected-result (parse map-example-cci))))
 
+(def oneof-example-cci
+  "
+  message OneofTest {
+
+      oneof Test {
+          string account = 4;
+          double loan = 5;
+      }
+
+  }
+  "
+)
+
+(def oneof-example-expected-result
+  [[ :interface [ :message "OneofTest" [ :oneof "Test" [ :field [ :type [ :scalar "string" ] ] [ :fieldName "account" ] [ :index "4" ] ] [ :field [ :type [ :scalar "double" ] ] [ :fieldName "loan" ] [ :index "5" ] ] ] ] ] nil])
+
+(deftest test-oneof-parser-output
+  (is (= oneof-example-expected-result (parse oneof-example-cci))))
+
 (def example-undefined-type-cci
   "
   message BadMessage {

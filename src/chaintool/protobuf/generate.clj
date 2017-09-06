@@ -25,7 +25,7 @@
 
 (deftype Field       [^String modifier ^String type ^String name ^String index])
 (deftype Definition  [^String type ^String name ^ArrayList entries])
-(deftype Entry       [^Definition message ^Definition enum ^Field field])
+(deftype Entry       [^Definition message ^Definition enum ^Field field ^Definition oneof])
 (deftype Function    [^String key ^String rettype ^String name ^String param])
 
 (defn- typeconvert [[prefix name :as inType]]
@@ -61,7 +61,12 @@
 (defn- build-msgfield [ast]
   (let [field (zip/down ast)
         {:keys [modifier type fieldName index]} (intf/getattrs field)]
-    (->Entry nil nil (->Field modifier (typeconvert type) fieldName index))))
+    (->Entry nil nil (->Field modifier (typeconvert type) fieldName index) nil)))
+
+(defn- build-oneoffield [ast]
+  (let [field (zip/down ast)
+        {:keys [modifier type fieldName index]} (intf/getattrs field)]
+    (->Field modifier (typeconvert type) fieldName index)))
 
 (defn- build-enumfield [ast]
   (let [field (zip/down ast)
@@ -71,12 +76,14 @@
 
 (declare build-message)
 (declare build-enum)
+(declare build-oneof)
 (defn- build-subentry [ast]
   (let [type (->> ast zip/down zip/node)]
     (case type
       :message (build-message ast)
       :enum (build-enum ast)
-      :field (build-msgfield ast))))
+      :field (build-msgfield ast)
+      :oneof (build-oneof ast))))
 
 (defn- build-message [ast]
   (let [elem (zip/down ast)
@@ -90,7 +97,7 @@
 
                     :else
                     (recur (zip/right loc) (assoc entries index (build-subentry loc)) (inc index))))]
-    (->Entry (->Definition "message" name entries) nil nil)))
+    (->Entry (->Definition "message" name entries) nil nil nil)))
 
 (defn- build-enum [ast]
   (let [elem (zip/down ast)
@@ -104,7 +111,21 @@
 
                     :else
                     (recur (zip/right loc) (assoc entries index (build-enumfield loc)) (inc index))))]
-    (->Entry nil (->Definition "enum" name entries) nil)))
+    (->Entry nil (->Definition "enum" name entries) nil nil)))
+
+(defn- build-oneof [ast]
+  (let [elem (zip/down ast)
+        name (->> elem zip/right zip/node)
+        first (->> elem zip/right zip/right)
+        entries (loop [loc first entries {} index 0]
+                  (cond
+
+                    (nil? loc)
+                    entries
+
+                    :else
+                    (recur (zip/right loc) (assoc entries index (build-oneoffield loc)) (inc index))))]
+    (->Entry nil nil nil (->Definition "oneof" name entries))))
 
 (defn- build-toplevel-entry [ast]
   (let [type (->> ast zip/down zip/node)]
