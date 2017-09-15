@@ -263,11 +263,6 @@
   ;;-----------------------------------------------------------------
   ;; build - generates all golang platform artifacts within the
   ;; default location in the build area
-  ;;
-  ;; N.B. static linking is currently disabled
-  ;; to reenable add:
-  ;;        "-ldflags" "-linkmode external -extldflags '-static'"
-  ;; to (go-cmd ...)
   ;;-----------------------------------------------------------------
   (build [_ {:keys [path config output]}]
     (let [builddir (io/file path "build")]
@@ -282,6 +277,7 @@
         (go-cmd {:path path
                  :env {"GOBIN" (.getCanonicalPath gobin)}}
                 "build" "-o" (.getCanonicalPath output)
+                "-ldflags" "-linkmode external -extldflags '-static'"
                 "chaincode"))
 
       (println "Compilation complete")))
