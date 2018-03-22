@@ -4,7 +4,7 @@
 ;; SPDX-License-Identifier: Apache-2.0
 ;;
 
-(defproject chaintool "1.0.2-SNAPSHOT"
+(defproject chaintool "1.1.0"
   :description "Hyperledger Fabric chaincode tool"
   :url "https://github.com/hyperledger/fabric-chaintool"
   :license {:name "Apache License"
