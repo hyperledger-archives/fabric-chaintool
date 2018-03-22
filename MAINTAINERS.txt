@@ -7,3 +7,6 @@
 Greg Haskins <gregory.haskins@gmail.com>
 Eric Baur <ecb@robeybaur.org>
 Muralidharan Srinivasan <srinivasan.muralidharan99@gmail.com>
+
+Also:
+https://github.com/hyperledger/fabric/blob/master/docs/source/MAINTAINERS.rst
