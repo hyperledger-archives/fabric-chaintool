@@ -304,7 +304,7 @@
   ;; package - writes the chaincode package to the filesystem
   ;;-----------------------------------------------------------------
   (package [_ {:keys [path config outputfile compressiontype]}]
-    (let [filespec ["src" config/configname]]
+    (let [filespec ["src" "META-INF" config/configname]]
 
       (println "Writing CAR to:" (.getCanonicalPath outputfile))
       (println "Using path" path (str filespec))
