@@ -41,4 +41,14 @@
         :bin-path "target"
         :bootclasspath true}
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+
+  ;; nREPL by default starts in the :main namespace, we want to start in `user`
+  ;; because that's where our development helper functions like (run) and
+  ;; (browser-repl) live.
+  :repl-options {:init-ns user}
+
+  :profiles {:dev {:dependencies [[org.clojure/tools.nrepl "0.2.13"]
+                                  [org.clojure/tools.namespace "0.2.11"]]
+                   :plugins      [[cider/cider-nrepl "0.15.1"]]
+                   :source-paths ["dev"]}
+             :uberjar {:aot :all}})
