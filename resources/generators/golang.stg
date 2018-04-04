@@ -21,7 +21,6 @@ import (
 	"regexp"
 	"strconv"
 
-	<if(system)>"github.com/hyperledger/fabric/core/system_chaincode/api"<endif>
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 	"<base>/ccs/api"
@@ -109,34 +108,38 @@ func (self *stubHandler) addDispatcher(name string, intf interface{}) error {
 	return nil
 }
 
-func Start(interfaces Interfaces) error {
+func New(interfaces Interfaces) (shim.Chaincode, error) {
 
 	metadata := &ChaincodeMetaData{}
 	handler := &stubHandler{dispatchers: make(Dispatchers)}
 
 	// Install our metadata impl first so that we give the user a chance to subclass and override
 	if err := handler.addDispatcher("org.hyperledger.chaintool.meta", metadata); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Install all of the declared interfaces
 	for name, intf := range interfaces {
 		if err := handler.addDispatcher(name, intf); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	<if(system)>
-	api.RegisterSysCC("<system>", handler)
-	<else>
-	err := shim.Start(handler)
+	return handler, nil
+}
+
+<if(!system)>
+func Start(interfaces Interfaces) error {
+
+	handler, err := New(interfaces)
 	if err != nil {
 		return err
 	}
-	<endif>
 
-	return nil
+	return shim.Start(handler)
 }
+<endif>
+
 <!
 !-------------------------------------------------------------------------------------------------
 ! end of primary template.

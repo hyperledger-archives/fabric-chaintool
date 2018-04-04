@@ -54,19 +54,18 @@
   ;; default location in the build area
   ;;-----------------------------------------------------------------
   (build [_ {:keys [path config output]}]
-    (let [builddir "build"
+    (let [builddir "vendor"
           opath (io/file path builddir)
-          pkgname (get-package-name path)
-          gopath (compute-gopath path pkgname)]
+          pkgname (get-package-name path)]
 
       ;; ensure we clean up any previous runs
       (fileutils/recursive-delete opath)
 
       ;; run our code generator
-      (generate {:base (str pkgname "/" builddir)
+      (generate {:base "hyperledger"
                  :package pkgname
                  :ipath (io/file path "interfaces")
-                 :opath (io/file gopath)
+                 :opath opath
                  :config config})
 
       (println "Compilation complete")))
@@ -81,7 +80,7 @@
   ;; clean - cleans up any artifacts from a previous build, if any
   ;;-----------------------------------------------------------------
   (clean [_ {:keys [path]}]
-    (fileutils/recursive-delete (io/file path "build")))
+    (fileutils/recursive-delete (io/file path "vendor")))
 
 ;;-----------------------------------------------------------------
   ;; package - not supported for system chaincode
