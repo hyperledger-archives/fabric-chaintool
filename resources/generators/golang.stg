@@ -30,6 +30,7 @@ type Interfaces map[string]interface{}
 type Dispatchers map[string]api.Dispatcher
 
 type stubHandler struct {
+	initDispatcher api.Dispatcher
 	dispatchers Dispatchers
 }
 
@@ -50,9 +51,9 @@ func (self *stubHandler) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error("Function must be \"init\"")
 	}
 
-	dispatcher, ok := self.dispatchers["appinit"]
-	if !ok {
-		return shim.Error("Interface not found")
+	dispatcher := self.initDispatcher
+	if dispatcher == nil {
+		return shim.Error("Init interface not found: Please define \"appinit\"")
 	}
 
 	return dispatcher.Dispatch(stub, 1, args[1])
@@ -120,8 +121,16 @@ func New(interfaces Interfaces) (shim.Chaincode, error) {
 
 	// Install all of the declared interfaces
 	for name, intf := range interfaces {
-		if err := handler.addDispatcher(name, intf); err != nil {
+		dispatcher, err := api.Create(name, intf)
+		if err != nil {
 			return nil, err
+		}
+
+		switch name {
+		case "appinit":
+			handler.initDispatcher = dispatcher
+		default:
+			handler.dispatchers[name] = dispatcher
 		}
 	}
 
