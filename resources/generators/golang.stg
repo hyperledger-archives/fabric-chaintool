@@ -1,3 +1,5 @@
+<! -*- Mode:go;  -*- !>
+
 primary(base, system, provides) ::=
 <<
 <!
@@ -15,21 +17,21 @@ primary(base, system, provides) ::=
 package ccs
 
 import (
-       	"errors"
-        "regexp"
-        "strconv"
+	"errors"
+	"regexp"
+	"strconv"
 
-        <if(system)>"github.com/hyperledger/fabric/core/system_chaincode/api"<endif>
+	<if(system)>"github.com/hyperledger/fabric/core/system_chaincode/api"<endif>
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-        pb "github.com/hyperledger/fabric/protos/peer"
-        "<base>/ccs/api"
+	pb "github.com/hyperledger/fabric/protos/peer"
+	"<base>/ccs/api"
 )
 
 type Interfaces map[string]interface{}
 type Dispatchers map[string]api.Dispatcher
 
 type stubHandler struct {
-     dispatchers Dispatchers
+	dispatchers Dispatchers
 }
 
 var functionspec = regexp.MustCompile("([a-zA-Z0-9.]*)/fcn/([0-9]*)")
@@ -43,18 +45,18 @@ func (self *stubHandler) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error("Expected exactly two arguments")
 	}
 
-        function := string(args[0])
+	function := string(args[0])
 
-        if function != "init" {
-               return shim.Error("Function must be \"init\"")
-        }
+	if function != "init" {
+		return shim.Error("Function must be \"init\"")
+	}
 
-        dispatcher, ok := self.dispatchers["appinit"]
-        if !ok {
-               return shim.Error("Interface not found")
-        }
+	dispatcher, ok := self.dispatchers["appinit"]
+	if !ok {
+		return shim.Error("Interface not found")
+	}
 
-        return dispatcher.Dispatch(stub, 1, args[1])
+	return dispatcher.Dispatch(stub, 1, args[1])
 }
 
 // Callback representing the invocation of a chaincode
@@ -62,7 +64,7 @@ func (self *stubHandler) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 
 	args := stub.GetArgs()
 
-        var params []byte
+	var params []byte
 
 	if len(args) > 1 {
 		params = args[1]
@@ -73,12 +75,12 @@ func (self *stubHandler) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-        return dispatcher.Dispatch(stub, index, params)
+	return dispatcher.Dispatch(stub, index, params)
 }
 
 func (self *stubHandler) decodeFunction(function string) (api.Dispatcher, int, error) {
 
-        spec := functionspec.FindAllStringSubmatch(function, -1)
+	spec := functionspec.FindAllStringSubmatch(function, -1)
 	if spec == nil {
 		return nil, 0, errors.New("Could not parse function name")
 	}
@@ -88,7 +90,7 @@ func (self *stubHandler) decodeFunction(function string) (api.Dispatcher, int, e
 		return nil, 0, errors.New("Interface not found")
 	}
 
- 	index, err := strconv.Atoi(spec[0][2])
+	index, err := strconv.Atoi(spec[0][2])
 	if err != nil {
 		return nil, 0, errors.New("Could not convert function index")
 	}
@@ -98,42 +100,42 @@ func (self *stubHandler) decodeFunction(function string) (api.Dispatcher, int, e
 
 func (self *stubHandler) addDispatcher(name string, intf interface{}) error {
 
-        dispatcher, err := api.Create(name, intf)
-        if err != nil {
-               return err
-        }
+	dispatcher, err := api.Create(name, intf)
+	if err != nil {
+		return err
+	}
 
-        self.dispatchers[name] = dispatcher
-        return nil
+	self.dispatchers[name] = dispatcher
+	return nil
 }
 
 func Start(interfaces Interfaces) error {
 
-       metadata := &ChaincodeMetaData{}
-       handler := &stubHandler{dispatchers: make(Dispatchers)}
+	metadata := &ChaincodeMetaData{}
+	handler := &stubHandler{dispatchers: make(Dispatchers)}
 
-       // Install our metadata impl first so that we give the user a chance to subclass and override
-       if err := handler.addDispatcher("org.hyperledger.chaintool.meta", metadata); err != nil {
+	// Install our metadata impl first so that we give the user a chance to subclass and override
+	if err := handler.addDispatcher("org.hyperledger.chaintool.meta", metadata); err != nil {
 		return err
-       }
+	}
 
-       // Install all of the declared interfaces
-       for name, intf := range interfaces {
-           if err := handler.addDispatcher(name, intf); err != nil {
-              return err
-           }
-       }
+	// Install all of the declared interfaces
+	for name, intf := range interfaces {
+		if err := handler.addDispatcher(name, intf); err != nil {
+			return err
+		}
+	}
 
-       <if(system)>
-       api.RegisterSysCC("<system>", handler)
-       <else>
-       err := shim.Start(handler)
-       if err != nil {
-               return err
-       }
-       <endif>
+	<if(system)>
+	api.RegisterSysCC("<system>", handler)
+	<else>
+	err := shim.Start(handler)
+	if err != nil {
+		return err
+	}
+	<endif>
 
-       return nil
+	return nil
 }
 <!
 !-------------------------------------------------------------------------------------------------
@@ -158,33 +160,33 @@ api() ::=
 package api
 
 import (
-        "errors"
+	"errors"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-        pb "github.com/hyperledger/fabric/protos/peer"
+	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 type Dispatcher interface {
-     Dispatch(stub shim.ChaincodeStubInterface, function int, params []byte) pb.Response
+	Dispatch(stub shim.ChaincodeStubInterface, function int, params []byte) pb.Response
 }
 
 type Factory interface {
-     Create(intf interface{}) (Dispatcher, error)
+	Create(intf interface{}) (Dispatcher, error)
 }
 
 var factories = make(map[string]Factory)
 
 func Register(name string, factory Factory) error {
-     factories[name] = factory
-     return nil
+	factories[name] = factory
+	return nil
 }
 
 func Create(name string, intf interface{}) (Dispatcher, error) {
-     factory, ok := factories[name]
-     if !ok {
-        return nil, errors.New("Factory not found")
-     }
+	factory, ok := factories[name]
+	if !ok {
+		return nil, errors.New("Factory not found")
+	}
 
-     return factory.Create(intf)
+	return factory.Create(intf)
 }
 >>
 
@@ -205,19 +207,19 @@ metadata(facts, provides) ::=
 package ccs
 
 import (
-        "errors"
+	"errors"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"hyperledger/cci/org/hyperledger/chaintool/meta"
 )
 
 var interfaces = map[string][]byte {
-        <provides.values:{intf|"<intf.name>": []byte("<intf.bytes>"),}; separator="\n">
+	<provides.values:{intf|"<intf.name>": []byte("<intf.bytes>"),}; separator="\n">
 }
 
 var facts = &meta.Facts {
-        Facts: []*meta.Facts_Fact {
-               <facts.values:{fact|<metafact(fact)>}; separator="\n">
-        },
+	Facts: []*meta.Facts_Fact {
+		<facts.values:{fact|<metafact(fact)>}; separator="\n">
+	},
 }
 
 type ChaincodeMetaData struct {
@@ -273,18 +275,18 @@ package <intf.package>
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-        pb "github.com/hyperledger/fabric/protos/peer"
-        "<base>/ccs/api"
-        "fmt"
+	pb "github.com/hyperledger/fabric/protos/peer"
+	"<base>/ccs/api"
+	"fmt"
 )
 
 type CCInterface interface {
-     <declarefunctions(intf, intf.functions)>
+	<declarefunctions(intf, intf.functions)>
 }
 
 
 type stubImpl struct {
-     intf CCInterface
+	intf CCInterface
 }
 
 // Factory mechanics
@@ -292,21 +294,21 @@ type factoryImpl struct {
 }
 
 func init() {
-     self := &factoryImpl{}
-     api.Register("<intf.name>", self)
+	self := &factoryImpl{}
+	api.Register("<intf.name>", self)
 }
 
 func (self *factoryImpl) Create(intf interface{}) (api.Dispatcher, error) {
-     return &stubImpl{intf: intf.(CCInterface)}, nil
+	return &stubImpl{intf: intf.(CCInterface)}, nil
 }
 
 func (self *stubImpl) Dispatch(stub shim.ChaincodeStubInterface, function int, params []byte) pb.Response {
-        // Handle different functions
-        switch {
-        <dispatchfunctions(intf, intf.functions)>
-        default:
-                return shim.Error("Received unknown function invocation")
-        }
+	// Handle different functions
+	switch {
+	<dispatchfunctions(intf, intf.functions)>
+	default:
+		return shim.Error("Received unknown function invocation")
+	}
 }
 
 /* Server stubs */
@@ -337,7 +339,7 @@ package <intf.package>
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-        "fmt"
+	"fmt"
 )
 
 /* Client stubs */
@@ -363,7 +365,7 @@ declarefunctions(intf, functions) ::=
 dispatchfunction(intf, func) ::=
 <<
 case function == <func.index>:
-     return self.proxy<func.name>(stub, params)
+	return self.proxy<func.name>(stub, params)
 >>
 
 implementserver(intf, func) ::=
@@ -371,30 +373,30 @@ implementserver(intf, func) ::=
 
 func (self *stubImpl) proxy<func.name>(stub shim.ChaincodeStubInterface, _params []byte) pb.Response {
 
-     var err error;
+	var err error;
 
-     <if(func.param)>
-     params := &<func.param>{}
-     err = proto.Unmarshal(_params, params)
-     if (err != nil) {
-        return shim.Error(fmt.Sprintf("protobuf unmarshal error: %s", err))
-     }
-     <endif>
+	<if(func.param)>
+	params := &<func.param>{}
+	err = proto.Unmarshal(_params, params)
+	if (err != nil) {
+		return shim.Error(fmt.Sprintf("protobuf unmarshal error: %s", err))
+	}
+	<endif>
 
-     <if(func.rettype)>result, err := <else>err = <endif>self.intf.<func.name>(stub<if(func.param)>, params<endif>)
-     if (err != nil) {
-        return shim.Error(err.Error())
-     }
+	<if(func.rettype)>result, err := <else>err = <endif>self.intf.<func.name>(stub<if(func.param)>, params<endif>)
+	if (err != nil) {
+		return shim.Error(err.Error())
+	}
 
-     <if(func.rettype)>
-     _result, err := proto.Marshal(result)
-     if (err != nil) {
-        return shim.Error(fmt.Sprintf("protobuf marshal error: %s", err))
-     }
-     return shim.Success(_result)
-     <else>
-     return shim.Success(nil)
-     <endif>
+	<if(func.rettype)>
+	_result, err := proto.Marshal(result)
+	if (err != nil) {
+		return shim.Error(fmt.Sprintf("protobuf marshal error: %s", err))
+	}
+	return shim.Success(_result)
+	<else>
+	return shim.Success(nil)
+	<endif>
 }
 
 >>
@@ -405,37 +407,37 @@ implementclient(intf, func) ::=
 func <func.name>(stub shim.ChaincodeStubInterface, chaincodeName string<if(func.param)>, params *<func.param><endif>) <\\>
 <if(func.rettype)>(*<func.rettype>, error)<else>error<endif> {
 
-     <if(func.param)>
-     args := make([][]byte, 2)
-     <else>
-     args := make([][]byte, 1)
-     <endif>
-     var err error
-
-     args[0] = []byte(<compositename(intf, func)>)
-
-     <if(func.param)>
-     args[1], err = proto.Marshal(params)
-     if (err != nil) {
-          return <if(func.rettype)>nil, <endif>err
-     }
-     <endif>
-
-      resp := stub.InvokeChaincode(chaincodeName, args, "")
-      if resp.Status \< shim.ERROR {
-         <if(func.rettype)>
-	result := &<func.rettype>{}
-	err = proto.Unmarshal(resp.Payload, result)
-	if (err != nil) {
-	     return nil, fmt.Errorf("Error unmarshalling return value: %s", err)
-	}
-	return result, nil
+	<if(func.param)>
+	args := make([][]byte, 2)
 	<else>
-	return nil
+	args := make([][]byte, 1)
 	<endif>
-     }
+	var err error
 
-     return <if(func.rettype)>nil, <endif>fmt.Errorf("RPC failure: %s", resp.Message)
+	args[0] = []byte(<compositename(intf, func)>)
+
+	<if(func.param)>
+	args[1], err = proto.Marshal(params)
+	if (err != nil) {
+		return <if(func.rettype)>nil, <endif>err
+	}
+	<endif>
+
+	resp := stub.InvokeChaincode(chaincodeName, args, "")
+	if resp.Status \< shim.ERROR {
+		<if(func.rettype)>
+		result := &<func.rettype>{}
+		err = proto.Unmarshal(resp.Payload, result)
+		if (err != nil) {
+			return nil, fmt.Errorf("Error unmarshalling return value: %s", err)
+		}
+		return result, nil
+		<else>
+		return nil
+		<endif>
+	}
+
+	return <if(func.rettype)>nil, <endif>fmt.Errorf("RPC failure: %s", resp.Message)
 }
 
 >>
