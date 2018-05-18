@@ -91,7 +91,7 @@
    {:name "proto" :desc "Compiles a CCI file to a .proto"
     :handler protocmd/run
     :arguments "path/to/file.cci"
-    :validate (fn [options arguments] (= (count arguments) 1))
+    :validate (fn [options arguments] (>= (count arguments) 1))
     :options (option-merge [["-o" "--output NAME" "path to the output destination"]]
                            common-options)}
 

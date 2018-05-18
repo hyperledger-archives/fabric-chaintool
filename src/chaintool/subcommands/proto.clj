@@ -17,16 +17,18 @@
             [chaintool.protobuf.generate :as pb]
             [chaintool.util :as util]
             [clojure.java.io :as io]
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs]
+            [clojure.string :as str]))
 
 (defn getoutputfile [options input name]
   (if-let [output (:output options)]
-    (io/file output)
+    (io/file (str output (when-not (str/ends-with? output "/") "/") name ".proto"))
     (io/file (str name ".proto"))))
 
 (defn run [options args]
-  (let [input (io/file (first args))
-        name (fs/base-name input true)
-        output (getoutputfile options input name)
-        intf (intf/compileintf {:path (.getCanonicalPath input) :data (util/safe-slurp input)})]
-    (pb/to-file output name [name intf])))
+   (doseq [raw_input args]
+       (let [input  (io/file raw_input)
+             name   (fs/base-name input true)
+             output (getoutputfile options input name)
+             intf   (intf/compileintf {:path (.getCanonicalPath input) :data (util/safe-slurp input)})]
+         (pb/to-file output name [name intf]))))
