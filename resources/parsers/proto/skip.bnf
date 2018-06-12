@@ -2,5 +2,5 @@ skipper ::= (whitespace | blankline | ( wlcomment / comment))*
 
 whitespace ::= #"[ \t]"
 blankline ::= #"^\n"
-wlcomment ::= #'^' comment '\n'
-comment ::= ('//' | '#') (!'\n' #'.')*
+wlcomment ::= #'^' comment
+comment ::= ('//' | '#') (!'\n' #'.')* '\n'

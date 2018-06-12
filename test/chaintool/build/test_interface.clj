@@ -193,3 +193,18 @@
 (deftest test-no-parameters
   (let [intf (parse example-no-parameters)]
     (is (nil? (verify-intf intf)))))
+
+(def example-comment-before-msg
+  "
+  message Foo {}
+  message Bar {
+     // This comment should be fine
+     string baz = 1;
+     // This comment should not break the parser
+     Foo my_foo = 2;
+  }
+  ")
+
+(deftest test-comment-before-msg
+  (let [intf (parse example-comment-before-msg)]
+    (is (nil? (verify-intf intf)))))
