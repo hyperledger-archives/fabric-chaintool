@@ -1,4 +1,4 @@
-<! -*- Mode:go;  -*- !>
+// -*- Mode:go;  -*-
 
 primary(base, system, provides) ::=
 <<
