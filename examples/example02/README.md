@@ -5,7 +5,6 @@ This directory contains an implementation of the chaincode application called "e
 ```
 ├── README.md
 ├── app
-│   ├── app.iml
 │   ├── chaincode.yaml
 │   └── src
 │       ├── chaincode
