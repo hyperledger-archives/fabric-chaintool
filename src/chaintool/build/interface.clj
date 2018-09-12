@@ -125,6 +125,38 @@
                                  vector
                                  (into {})))
 
+(defn get-fqpath
+  "Returns a fully-qualified path to a node in the tree using dot
+  notation.  E.g. 'Foo.Bar.Baz`.  Expects/requires the AST
+  nodes to conform to [:type $NAME ..] scheme and is targeted
+  towards the use case of :message/:enum nodes.  However, it
+  may in fact be general enough for use elsewhere, YMMV
+  "
+  [ast]
+  (->> (zip/path ast)
+       (rest)
+       (mapv second)
+       (interpose ".")
+       (apply str)))
+
+(defn get-fqsymbols
+  "Create a table of fully qualified symbols defined within this interface"
+  [intf]
+  (loop [loc intf acc #{}]
+    (cond
+
+      (or (nil? loc) (zip/end? loc))
+      acc
+
+      :else
+      (let [node (zip/node loc)
+            acc (if (contains? #{:message :enum} node)
+                  (let [path (get-fqpath loc)]
+                    (conj acc path))
+                  acc)]
+        (recur (zip/next loc) acc)))))
+
+
 (defn find-definition-in-local [name ast]
   (let [start (zip/leftmost ast)]
     (loop [loc (case (zip/node start)
@@ -162,6 +194,9 @@
   ;; use the end-line since instaparse includes whitespace and the start-line is typically the previous line
   (->> ast meta :instaparse.gll/end-line))
 
+(defn bad-usertype [{:keys [typeName fieldName type]}]
+  (str "line " (get-lineno type) ": type \"" typeName "\" for field \"" fieldName "\" is not defined"))
+
 ;;-----------------------------------------------------------------
 ;; error threading helpers
 ;;-----------------------------------------------------------------
@@ -190,31 +225,48 @@
 ;;-----------------------------------------------------------------
 
 ;;-----------------------------------------------------------------
-;; verify-usertype: fields of type :userType need to reference an
+;; verify-local-usertype: fields of type :userType may reference an
 ;; in scope definition (:message or :enum).  Therefore, we need to
 ;; walk our scope backwards to find if this usertype has been defined
 ;;-----------------------------------------------------------------
-(defn verify-usertype [ast]
-  (let [{:keys [typeName fieldName type]} (getattrs ast)]
-    (loop [loc (zip/up ast)]
-      (cond
+(defn verify-local-usertype [ast {:keys [typeName] :as attrs}]
+  (loop [loc (zip/up ast)]
+    (cond
 
-        (nil? loc)
-        [nil (str "line " (get-lineno type) ": type \"" typeName "\" for field \"" fieldName "\" is not defined")]
+      (nil? loc)
+      [nil (bad-usertype attrs)]
 
-        (find-definition-in-local typeName loc)
-        [ast nil]
+      (find-definition-in-local typeName loc)
+      [ast nil]
 
-        :else
-        (recur (zip/up loc))))))
+      :else
+      (recur (zip/up loc)))))
+
+(defn verify-global-usertype [symbols ast {:keys [typeName] :as attrs}]
+  (if (get symbols typeName)
+    [ast nil]
+    [nil (bad-usertype attrs)]))
+
+;;-----------------------------------------------------------------
+;; verify-usertype: fields of type :userType may reference
+;; definitions or messages or enums.  They may be scoped locally
+;; or globally, so we need to account for both options in order
+;; to properly resolve all symbols.
+;;-----------------------------------------------------------------
+(defn verify-usertype [symbols ast]
+  (let [attrs (getattrs ast)
+        local (verify-local-usertype ast attrs)]
+    (if (some? (first local))
+      local
+      (verify-global-usertype symbols ast attrs))))
 
 ;;-----------------------------------------------------------------
 ;; verify-fieldtype: validate a field according to the type it is
 ;;-----------------------------------------------------------------
-(defn verify-fieldtype [ast]
+(defn verify-fieldtype [symbols ast]
   (let [{:keys [subType]} (getattrs ast)]
     (case subType
-      :userType (verify-usertype ast)
+      :userType (verify-usertype symbols ast)
       :scalar [ast nil]
       :map [ast nil])))
 
@@ -243,9 +295,9 @@
 ;; verifications such as checking scope resolution for any custom
 ;; types, and ensuring our indices do not conflict
 ;;-----------------------------------------------------------------
-(defn verify-msg-field [ast indices]
+(defn verify-msg-field [symbols ast indices]
   (let [[_ error] (err->> ast
-                          verify-fieldtype
+                          (partial verify-fieldtype symbols)
                           #(check-index-dups (get-index ast) indices %))
         lineno (->> ast zip/up zip/node get-lineno)]
     (if (nil? error)
@@ -275,7 +327,7 @@
 ;; verify-message: verify the fields of a message by scanning through
 ;; all fields in the AST, skipping non :field types
 ;;-----------------------------------------------------------------
-(defn verify-message [ast]
+(defn verify-message [symbols ast]
   (let [name (get-definition-name ast)]
     (loop [loc (->> ast zip/right zip/right) _indices {}]
       (cond
@@ -287,7 +339,7 @@
         (let [node (zip/down loc)
               type (zip/node node)
               [indices error] (if (= type :field)
-                                (verify-msg-field node _indices)
+                                (verify-msg-field symbols node _indices)
                                 [_indices nil])]
 
           (if (nil? error)
@@ -321,20 +373,21 @@
 ;; types we encounter
 ;;-----------------------------------------------------------------
 (defn verify-intf [intf]
-  (loop [loc intf]
-    (cond
+  (let [symbols (get-fqsymbols intf)]
+    (loop [loc intf]
+      (cond
 
-      (or (nil? loc) (zip/end? loc))
-      nil
+        (or (nil? loc) (zip/end? loc))
+        nil
 
-      :else
-      (let [node (zip/node loc)]
-        (if-let [error (case node
-                         :message (verify-message loc)
-                         :enum (verify-enum loc)
-                         nil)]
-          error
-          (recur (zip/next loc)))))))
+        :else
+        (let [node (zip/node loc)]
+          (if-let [error (case node
+                           :message (verify-message symbols loc)
+                           :enum (verify-enum loc)
+                           nil)]
+            error
+            (recur (zip/next loc))))))))
 
 ;;-----------------------------------------------------------------
 ;; compileintf - Compile an interface to an AST.

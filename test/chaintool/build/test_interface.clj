@@ -15,7 +15,10 @@
 (ns chaintool.build.test_interface
   (:require [clojure.test :refer :all]
             [chaintool.build.interface :refer :all]
-            [slingshot.slingshot :as slingshot])
+            [chaintool.ast :as ast]
+            [slingshot.slingshot :as slingshot]
+            [clojure.pprint :refer [pprint]]
+            [clojure.zip :as zip])
   (:refer-clojure :exclude [compile]))
 
 (def example1-cci
@@ -208,3 +211,22 @@
 (deftest test-comment-before-msg
   (let [intf (parse example-comment-before-msg)]
     (is (nil? (verify-intf intf)))))
+
+(def fabct-53-msg                                               ;; https://jira.hyperledger.org/browse/FABCT-53
+  "message Foo {
+    enum MyEnum { a = 0;}
+  }
+
+  message Bar {
+    Foo.MyEnum my_field = 1;
+  }
+  ")
+
+(defn find-usertype [x]
+  (->> (ast/find :userType x) zip/node second))
+
+(deftest test-fabct-53
+  (testing "Ensure we can cross-reference nested definitions"
+    (let [intf (parse fabct-53-msg)]
+      (is (nil? (verify-intf intf)))
+      (is (= (find-usertype intf) "Foo.MyEnum")))))
