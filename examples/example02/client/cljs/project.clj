@@ -13,7 +13,7 @@
                  [funcool/promesa "1.8.1"]]
   :plugins [[lein-nodecljs "0.7.0"]]
   :npm {:dependencies [[source-map-support "0.4.15"]
-                       [protobufjs "5.0.1"]
+                       [protobufjs "5.0.3"]
                        [read-yaml "1.1.0"]
                        [fabric-client "1.0.0-beta"]]}
   :source-paths ["src" "target/classes"]
